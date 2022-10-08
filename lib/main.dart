@@ -260,6 +260,7 @@ class MyApp extends StatelessWidget {
             routeInformationParser: _router.routeInformationParser,
             routerDelegate: _router.routerDelegate,
             scaffoldMessengerKey: scaffoldMessengerKey,
+            debugShowCheckedModeBanner: false,
           );
         }),
       ),
