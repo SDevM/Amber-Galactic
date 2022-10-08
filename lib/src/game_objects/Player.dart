@@ -21,10 +21,10 @@ class Player extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Player> createState() => _PlayerState();
+  State<Player> createState() => PlayerState();
 }
 
-class _PlayerState extends State<Player> {
+class PlayerState extends State<Player> {
   late Sprite _sprite;
   final AssetImage image = {} as AssetImage;
   Map<String, Bool> powerUps = {};

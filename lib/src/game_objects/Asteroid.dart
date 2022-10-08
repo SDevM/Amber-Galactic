@@ -21,10 +21,10 @@ class Asteroid extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<Asteroid> createState() => _AsteroidState();
+  State<Asteroid> createState() => AsteroidState();
 }
 
-class _AsteroidState extends State<Asteroid> {
+class AsteroidState extends State<Asteroid> {
   late double _speed;
   late Sprite _sprite;
   final AssetImage image = {} as AssetImage;

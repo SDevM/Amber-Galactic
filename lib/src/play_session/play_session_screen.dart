@@ -5,6 +5,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:game_template/src/game_objects/Asteroid.dart';
+import 'package:game_template/src/game_objects/Player.dart';
+import 'package:game_template/src/game_objects/PowerUp.dart';
+import 'package:game_template/src/style/background.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
 import 'package:provider/provider.dart';
@@ -39,13 +43,59 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
   late DateTime _startOfPlay;
 
-  void publisher(Timer timer) {
+  List<Player> player = [];
+  List<GlobalKey<PlayerState>> playerKeys = [];
+  List<PowerUp> powerUp = [];
+  List<GlobalKey<PowerUpState>> powerUpKeys = [];
+  List<Asteroid> asteroids = [];
+  List<GlobalKey<AsteroidState>> asteroidKeys = [];
+  late BoxConstraints screen;
+  int idCounter = 0;
 
+  bool firstRun = true;
+
+  void changes(Timer timer) {
+    setState(() {
+      if (firstRun) {
+        firstRun = false;
+        player.add(
+          Player(
+              key: playerKeys[0],
+              initX: screen.maxWidth / 2,
+              initY: screen.maxHeight - 100,
+              width: 50,
+              height: 50,
+              id: idCounter++),
+        );
+      }
+      if (timer.tick % 3600 == 0) {
+        powerUp.clear();
+        powerUp.add(PowerUp(
+            initX: screen.maxWidth / 2,
+            initY: screen.maxHeight / 2,
+            width: 30,
+            height: 30,
+            powerUp: 'ammo',
+            id: idCounter++));
+      }
+      if (timer.tick % ((60 - 0) / 1) == 0) {
+        asteroids.add(Asteroid(
+            initX: screen.maxWidth / 2,
+            initY: -50,
+            width: 50,
+            height: 50,
+            size: 1,
+            id: idCounter++));
+      }
+      asteroidKeys.forEach((element) {
+        element.currentState?.move();
+      });
+      powerUpKeys[0].currentState?.move();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    Timer.periodic(const Duration(milliseconds: 30), publisher);
     final palette = context.watch<Palette>();
 
     return MultiProvider(
@@ -58,24 +108,31 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       ],
       child: IgnorePointer(
         ignoring: _duringCelebration,
-        child: Scaffold(
-          backgroundColor: palette.backgroundPlaySession,
-          body: Stack(
-            children: [
-
-              // SizedBox.expand(
-              //   child: Visibility(
-              //     visible: _duringCelebration,
-              //     child: IgnorePointer(
-              //       child: Confetti(
-              //         isStopped: !_duringCelebration,
-              //       ),
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
+        child: LayoutBuilder(builder: (layoutContext, constraints) {
+          screen = constraints;
+          Timer.periodic(const Duration(milliseconds: 30), changes);
+          return Scaffold(
+            backgroundColor: palette.backgroundPlaySession,
+            body: Stack(
+              children: [
+                Background(),
+                ...player,
+                ...powerUp,
+                ...asteroids,
+                // SizedBox.expand(
+                //   child: Visibility(
+                //     visible: _duringCelebration,
+                //     child: IgnorePointer(
+                //       child: Confetti(
+                //         isStopped: !_duringCelebration,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }
@@ -98,7 +155,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   Future<void> _playerLost() async {
     // _log.info('Level ${widget.level.number} won');
 
-    final score = Score(DateTime.now().difference(_startOfPlay),
+    final score = Score(
+      DateTime.now().difference(_startOfPlay),
     );
 
     // final playerProgress = context.read<PlayerProgress>();

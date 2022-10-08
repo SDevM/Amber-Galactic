@@ -20,10 +20,10 @@ class PowerUp extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<PowerUp> createState() => _PowerUpState();
+  State<PowerUp> createState() => PowerUpState();
 }
 
-class _PowerUpState extends State<PowerUp> {
+class PowerUpState extends State<PowerUp> {
   late Sprite _sprite;
   final Map<String, AssetImage> images = {};
 
@@ -40,11 +40,11 @@ class _PowerUpState extends State<PowerUp> {
     );
   }
 
-  void move(double xOffset, double yOffset) {
+  void move() {
     Rect box = _sprite.box;
     setState(() {
       _sprite.box = Rect.fromLTWH(
-          box.left + xOffset, box.top + yOffset, box.width, box.height);
+          box.left, box.top + 10, box.width, box.height);
     });
   }
 
