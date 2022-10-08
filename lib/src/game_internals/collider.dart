@@ -22,7 +22,7 @@ class Collider extends ListBase<HitBox> {
   bool collisionCheck(HitBox box) {
     bool flag = false;
     for (HitBox listBox in l) {
-      if (box != listBox) {
+      if (box.id != listBox.id) {
         if (_collisionCompare(listBox, box)) {
           flag = true;
           break;

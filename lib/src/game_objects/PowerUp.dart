@@ -7,7 +7,17 @@ class PowerUp extends StatefulWidget {
   final double width;
   final double height;
   final String powerUp;
-  const PowerUp({Key? key, required this.initX, required this.initY, required this.width, required this.height, required this.powerUp}) : super(key: key);
+  final int id;
+
+  const PowerUp(
+      {Key? key,
+      required this.initX,
+      required this.initY,
+      required this.width,
+      required this.height,
+      required this.powerUp,
+      required this.id})
+      : super(key: key);
 
   @override
   State<PowerUp> createState() => _PowerUpState();
@@ -16,9 +26,11 @@ class PowerUp extends StatefulWidget {
 class _PowerUpState extends State<PowerUp> {
   late Sprite _sprite;
   final Map<String, AssetImage> images = {};
+
   @override
   Widget build(BuildContext context) {
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height, images[widget.powerUp]!);
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, images[widget.powerUp]!);
     return Positioned(
       top: _sprite.box.top,
       left: _sprite.box.left,
@@ -31,7 +43,8 @@ class _PowerUpState extends State<PowerUp> {
   void move(double xOffset, double yOffset) {
     Rect box = _sprite.box;
     setState(() {
-      _sprite.box = Rect.fromLTWH(box.left + xOffset, box.top + yOffset, box.width, box.height);
+      _sprite.box = Rect.fromLTWH(
+          box.left + xOffset, box.top + yOffset, box.width, box.height);
     });
   }
 

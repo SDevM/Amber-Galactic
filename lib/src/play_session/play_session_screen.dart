@@ -39,8 +39,13 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
   late DateTime _startOfPlay;
 
+  void publisher(Timer timer) {
+
+  }
+
   @override
   Widget build(BuildContext context) {
+    Timer.periodic(const Duration(milliseconds: 30), publisher);
     final palette = context.watch<Palette>();
 
     return MultiProvider(
