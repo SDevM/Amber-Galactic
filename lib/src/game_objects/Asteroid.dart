@@ -1,23 +1,21 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 
 import 'Sprite.dart';
 
-class Player extends StatefulWidget {
+class Asteroid extends StatefulWidget {
   final double initX;
   final double initY;
   final double width;
   final double height;
-  final int lives;
-  final Map<String, Bool> powerUps;
-  const Player({Key? key, required this.initX, required this.initY,required this.width, required this.height,required this.lives,  required this.powerUps}):super(key: key);
+  final int size;
+  final double speed;
+  const Asteroid({Key? key,required this.initX, required this.initY,required this.width, required this.height, required this.size, required this.speed}) : super(key: key);
 
   @override
-  State<Player> createState() => _PlayerState();
+  State<Asteroid> createState() => _AsteroidState();
 }
 
-class _PlayerState extends State<Player> {
+class _AsteroidState extends State<Asteroid> {
   late Sprite _sprite;
   final AssetImage image ={} as AssetImage;
   @override
@@ -37,9 +35,4 @@ class _PlayerState extends State<Player> {
       _sprite.box = Rect.fromLTWH(box.left + xOffset, box.top + yOffset, box.width, box.height);
     });
   }
-
-  void onCollide() {
-    // TODO Collision stuff
-  }
 }
-
