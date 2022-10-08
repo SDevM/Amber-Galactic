@@ -58,6 +58,15 @@ class SettingsScreen extends StatelessWidget {
                 onSelected: () => settings.toggleMusicOn(),
               ),
             ),
+            _gap,
+            ValueListenableBuilder<int>(
+              valueListenable: settings.highScore,
+              builder: (context, highScore, child) => _SettingsLine(
+                'Top Score',
+                Text('$highScore'),
+                onSelected: () => () {},
+              ),
+            ),
             Consumer<InAppPurchaseController?>(
                 builder: (context, inAppPurchase, child) {
               if (inAppPurchase == null) {
