@@ -19,11 +19,11 @@ class Player extends StatefulWidget {
 
 class _PlayerState extends State<Player> {
   late Sprite _sprite;
-  final Map<String, AssetImage> images ={};
+  final AssetImage image ={} as AssetImage;
   @override
   Widget build(BuildContext context) {
-    //not sure if the images should just be lives... 
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height, images[widget.lives]!);
+    //not sure if the images should just be lives...
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height, image!);
     return Positioned(
       top: _sprite.box.top,
       left: _sprite.box.left,
