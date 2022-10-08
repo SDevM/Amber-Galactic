@@ -52,7 +52,7 @@ flutter:
     - assets/music/
     - assets/music/background_music/
     - assets/sfx/
-    - assets/sfx/space_sfx1
+    - assets/sfx/space_sfx1/
 
   fonts:
     - family: Permanent Marker
