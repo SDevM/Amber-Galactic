@@ -22,20 +22,33 @@ class Collider extends ListBase<HitBox> {
   bool collisionCheck(HitBox box) {
     bool flag = false;
     for (HitBox listBox in l) {
-      if (_collisionCompare(listBox, box)) {
-        flag = true;
-        break;
+      if (box != listBox) {
+        if (_collisionCompare(listBox, box)) {
+          flag = true;
+          break;
+        }
       }
     }
     return flag;
   }
 
   bool _collisionCompare(HitBox box1, HitBox box2) {
-    if ((box1.box.top <= box2.box.top + box2.box.height &&
+    bool TL =
+        (box1.box.top <= box2.box.bottom && box1.box.top >= box2.box.top) &&
+            (box1.box.left <= box2.box.right && box1.box.left >= box2.box.left);
+    bool BL = (box1.box.bottom <= box2.box.bottom &&
+            box1.box.bottom >= box2.box.top) &&
+        (box1.box.left <= box2.box.right && box1.box.left >= box2.box.left);
+    bool TR = (box1.box.top <= box2.box.bottom &&
             box1.box.top >= box2.box.top) &&
-        (box1.box.left <= box2.box.left + box2.box.width &&
-            box1.box.left >= box2.box.left)) {
+        (box1.box.right <= box2.box.right && box1.box.right >= box2.box.left);
+    bool BR = (box1.box.bottom <= box2.box.bottom &&
+            box1.box.bottom >= box2.box.top) &&
+        (box1.box.right <= box2.box.right && box1.box.right >= box2.box.left);
+
+    if (TL || BL || TR || BR) {
       return true;
-    } else return false;
+    } else
+      return false;
   }
 }
