@@ -21,6 +21,8 @@ class SettingsController {
 
   ValueNotifier<bool> musicOn = ValueNotifier(false);
 
+  ValueNotifier<int> highScore = ValueNotifier(0);
+
   /// Creates a new instance of [SettingsController] backed by [persistence].
   SettingsController({required SettingsPersistence persistence})
       : _persistence = persistence;
@@ -37,6 +39,7 @@ class SettingsController {
       _persistence.getSoundsOn().then((value) => soundsOn.value = value),
       _persistence.getMusicOn().then((value) => musicOn.value = value),
       _persistence.getPlayerName().then((value) => playerName.value = value),
+      _persistence.getHighScore().then((value) => highScore.value = value),
     ]);
   }
 
@@ -58,5 +61,10 @@ class SettingsController {
   void toggleSoundsOn() {
     soundsOn.value = !soundsOn.value;
     _persistence.saveSoundsOn(soundsOn.value);
+  }
+
+  void setHighScore(int Score) {
+    highScore.value = Score;
+    _persistence.saveHighScore(highScore.value);
   }
 }

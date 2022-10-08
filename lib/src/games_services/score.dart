@@ -11,17 +11,16 @@ class Score {
 
   final Duration duration;
 
-  final int level;
 
-  factory Score(int level, int difficulty, Duration duration) {
+  factory Score(Duration duration) {
     // The higher the difficulty, the higher the score.
-    var score = difficulty;
-    // The lower the time to beat the level, the higher the score.
-    score *= 10000 ~/ (duration.inSeconds.abs() + 1);
-    return Score._(score, duration, level);
+    var score = 0;
+    // The longer the player survives, the higher the score.
+    score += 100 * (duration.inSeconds.abs() + 1);
+    return Score._(score, duration);
   }
 
-  const Score._(this.score, this.duration, this.level);
+  const Score._(this.score, this.duration);
 
   String get formattedTime {
     final buf = StringBuffer();
@@ -44,5 +43,5 @@ class Score {
   }
 
   @override
-  String toString() => 'Score<$score,$formattedTime,$level>';
+  String toString() => 'Score<$score,$formattedTime>';
 }

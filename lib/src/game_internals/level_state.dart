@@ -6,14 +6,13 @@ import 'package:flutter/foundation.dart';
 
 /// An extremely silly example of a game state.
 ///
-/// Tracks only a single variable, [progress], and calls [onWin] when
+/// Tracks only a single variable, [progress], and calls [onLose] when
 /// the value of [progress] reaches [goal].
 class LevelState extends ChangeNotifier {
-  final VoidCallback onWin;
+  final VoidCallback onLose;
 
-  final int goal;
 
-  LevelState({required this.onWin, this.goal = 100});
+  LevelState({required this.onLose});
 
   int _progress = 0;
 
@@ -24,9 +23,9 @@ class LevelState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void evaluate() {
-    if (_progress >= goal) {
-      onWin();
+  void evaluate(bool lost) {
+    if (lost) {
+      onLose();
     }
   }
 }

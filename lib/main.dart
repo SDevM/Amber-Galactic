@@ -134,28 +134,28 @@ class MyApp extends StatelessWidget {
             GoRoute(
                 path: 'play',
                 pageBuilder: (context, state) => buildMyTransition<void>(
-                      child: const LevelSelectionScreen(
-                          key: Key('level selection')),
+                      child: const PlaySessionScreen(
+                          key: Key('play session')),
                       color: context.watch<Palette>().backgroundLevelSelection,
                     ),
                 routes: [
+                  // GoRoute(
+                  //   path: 'session/:level',
+                  //   pageBuilder: (context, state) {
+                  //     final levelNumber = int.parse(state.params['level']!);
+                  //     final level = gameLevels
+                  //         .singleWhere((e) => e.number == levelNumber);
+                  //     return buildMyTransition<void>(
+                  //       child: PlaySessionScreen(
+                  //         level,
+                  //         key: const Key('play session'),
+                  //       ),
+                  //       color: context.watch<Palette>().backgroundPlaySession,
+                  //     );
+                  //   },
+                  // ),
                   GoRoute(
-                    path: 'session/:level',
-                    pageBuilder: (context, state) {
-                      final levelNumber = int.parse(state.params['level']!);
-                      final level = gameLevels
-                          .singleWhere((e) => e.number == levelNumber);
-                      return buildMyTransition<void>(
-                        child: PlaySessionScreen(
-                          level,
-                          key: const Key('play session'),
-                        ),
-                        color: context.watch<Palette>().backgroundPlaySession,
-                      );
-                    },
-                  ),
-                  GoRoute(
-                    path: 'won',
+                    path: 'lost',
                     pageBuilder: (context, state) {
                       final map = state.extra! as Map<String, dynamic>;
                       final score = map['score'] as Score;
@@ -163,7 +163,7 @@ class MyApp extends StatelessWidget {
                       return buildMyTransition<void>(
                         child: WinGameScreen(
                           score: score,
-                          key: const Key('win game'),
+                          key: const Key('lose game'),
                         ),
                         color: context.watch<Palette>().backgroundPlaySession,
                       );
