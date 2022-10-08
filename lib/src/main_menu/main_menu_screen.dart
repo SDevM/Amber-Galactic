@@ -43,7 +43,7 @@ class MainMenuScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Fast Hand',
-                  fontSize: 55,
+                  fontSize: 60,
                   height: 1,
                   color: Colors.white,
                 ),
