@@ -42,8 +42,17 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/sprite_images/
+    - assets/sprite_images/asteroids/
+    - assets/sprite_images/asteroids/hjm-random_asteroids-v3/
+    - assets/sprite_images/beams/
+    - assets/sprite_images/explosions/
+    - assets/sprite_images/explosions/2d-special-effects/
+    - assets/sprite_images/spaceships/
     - assets/music/
+    - assets/music/background_music/
     - assets/sfx/
+    - assets/sfx/space_sfx1/
 
   fonts:
     - family: Permanent Marker
