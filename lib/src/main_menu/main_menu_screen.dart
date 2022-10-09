@@ -31,7 +31,7 @@ class MainMenuScreen extends StatelessWidget {
           fit: BoxFit.fitHeight,
         ),
         Container(
-          color: Color.fromARGB(100, 0, 0, 0),
+          color: Color.fromARGB(30, 6, 6, 52),
         ),
         Scaffold(
           backgroundColor: palette.backgroundMain,
@@ -42,7 +42,7 @@ class MainMenuScreen extends StatelessWidget {
                 'Amber\nGalactic',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Fast Hand',
+                  fontFamily: 'FastHand',
                   fontSize: 60,
                   height: 1,
                   color: Colors.white,

@@ -137,6 +137,16 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
           screen = constraints;
           ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
           return GestureDetector(
+            // Player Controls
+            onLongPressStart: (LongPressStartDetails details) {
+              // TODO Make the player x axis movement negative or positive based on the side of the screen
+            },
+            onLongPressEnd: (LongPressEndDetails details) {
+              // TODO Set the player x axis movement back to 0
+            },
+            onDoubleTap: () {
+              // TODO Teleport!
+            },
             child: Scaffold(
               backgroundColor: palette.backgroundPlaySession,
               body: Stack(

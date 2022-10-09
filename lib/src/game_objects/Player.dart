@@ -28,7 +28,10 @@ class PlayerState extends State<Player> {
       Image.asset('assets/sprite_images/spaceships/ranger1.png');
   Map<String, bool> powerUps = {};
   int lives = 3;
-  int xOff = 0;
+  double _xOff = 0;
+  setOffsetX (double value) {
+    _xOff = value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +53,9 @@ class PlayerState extends State<Player> {
 
   void move(BoxConstraints bounds) {
     setState(() {
-      if (_sprite.x + xOff >= 0 &&
-          _sprite.x + xOff <= bounds.maxWidth - _sprite.width)
-        _sprite.x += xOff;
+      if (_sprite.x + _xOff >= 0 &&
+          _sprite.x + _xOff <= bounds.maxWidth - _sprite.width)
+        _sprite.x += _xOff;
     });
   }
 
