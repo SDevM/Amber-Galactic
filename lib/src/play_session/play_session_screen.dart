@@ -52,6 +52,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   List<GlobalKey<PowerUpState>> powerUpKeys = [];
   List<Asteroid> asteroids = [];
   List<GlobalKey<AsteroidState>> asteroidKeys = [];
+  List<inputType> inputPublisher = [];
   late BoxConstraints screen;
   int idCounter = 0;
   late Ticker _ticker;
@@ -76,6 +77,18 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
               height: 75,
               id: idCounter++),
         );
+      }
+      inputType input = inputPublisher.removeLast();
+      switch (input) {
+        case (inputType.TOUCH_LEFT):
+          playerKeys[0].currentState?.setOffsetX(-3);
+          break;
+        case (inputType.TOUCH_RIGHT):
+          playerKeys[0].currentState?.setOffsetX(3);
+          break;
+        case (inputType.DOUBLE_TOUCH):
+          game.evaluate(true);
+          break;
       }
       // if (timer.tick % 3600 == 0) {
       //   powerUpKeys.add(GlobalKey<PowerUpState>());
@@ -135,16 +148,15 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
           // Player Controls
           onTapDown: (TapDownDetails details) {
             // TODO Make the player x axis movement negative or positive based on the side of the screen
-            setState(() {
-              if (details.globalPosition.dx >= (screen.maxWidth / 2)) {
-                playerKeys[0].currentState?.setOffsetX(3);
-              } else {
-                playerKeys[0].currentState?.setOffsetX(-3);
-              }
-            });
+            if (details.globalPosition.dx >= (screen.maxWidth / 2)) {
+              inputPublisher.add(inputType.TOUCH_RIGHT);
+            } else {
+              inputPublisher.add(inputType.TOUCH_LEFT);
+            }
           },
           onDoubleTap: () {
             // TODO Teleport!
+            inputPublisher.add(inputType.DOUBLE_TOUCH);
           },
           child: Scaffold(
             backgroundColor: Colors.black,
@@ -198,7 +210,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       DateTime.now().difference(_startOfPlay),
     );
 
-    GoRouter.of(context).go('/play/won', extra: {'score': score});
+    GoRouter.of(context).go('/play/lost', extra: {'score': score});
   }
 
   @override
@@ -207,4 +219,10 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
     _ticker.dispose();
     super.dispose();
   }
+}
+
+enum inputType {
+  TOUCH_RIGHT,
+  TOUCH_LEFT,
+  DOUBLE_TOUCH,
 }
