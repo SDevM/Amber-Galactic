@@ -53,14 +53,10 @@ flutter:
       - assets/music/background_music/
       - assets/sfx/
       - assets/sfx/space_sfx1/
-
-   fonts:
-      - family: Permanent Marker
-        fonts:
-           - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf
-      - family: Fast Hand
-        fonts:
-           - asset: assets/Fast_Hand/FastHand.otf
+  fonts:
+    - family: FastHand
+      fonts:
+        - asset: assets/fonts/FastHand-lgBMV.ttf
 
 flutter_icons:
    android: true

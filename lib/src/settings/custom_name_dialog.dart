@@ -29,14 +29,19 @@ class _CustomNameDialogState extends State<CustomNameDialog> {
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
+
       scale: CurvedAnimation(
+
         parent: widget.animation,
         curve: Curves.easeOutCubic,
       ),
       child: SimpleDialog(
-        title: const Text('Change name'),
+        backgroundColor: Color(0xFF630563),
+
+        title: const Text('Change name',style: TextStyle(color: Colors.white70)),
         children: [
-          TextField(
+      TextField(
+        style: TextStyle(color: Colors.white70),
             controller: _controller,
             autofocus: true,
             maxLength: 12,
@@ -47,14 +52,18 @@ class _CustomNameDialogState extends State<CustomNameDialog> {
             onChanged: (value) {
               context.read<SettingsController>().setPlayerName(value);
             },
+
+
             onSubmitted: (value) {
               // Player tapped 'Submit'/'Done' on their keyboard.
               Navigator.pop(context);
             },
           ),
-          TextButton(
+          ElevatedButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Color(0xFF060634))),
+
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text('Close',style: TextStyle(color: Colors.white70)),
           ),
         ],
       ),
