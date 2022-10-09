@@ -78,17 +78,19 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
               id: idCounter++),
         );
       }
-      inputType input = inputPublisher.removeLast();
-      switch (input) {
-        case (inputType.TOUCH_LEFT):
-          playerKeys[0].currentState?.setOffsetX(-3);
-          break;
-        case (inputType.TOUCH_RIGHT):
-          playerKeys[0].currentState?.setOffsetX(3);
-          break;
-        case (inputType.DOUBLE_TOUCH):
-          game.evaluate(true);
-          break;
+      if (inputPublisher.isNotEmpty) {
+        inputType input = inputPublisher.removeLast();
+        switch (input) {
+          case (inputType.TOUCH_LEFT):
+            playerKeys[0].currentState?.setOffsetX(-3);
+            break;
+          case (inputType.TOUCH_RIGHT):
+            playerKeys[0].currentState?.setOffsetX(3);
+            break;
+          case (inputType.DOUBLE_TOUCH):
+            game.evaluate(true);
+            break;
+        }
       }
       // if (timer.tick % 3600 == 0) {
       //   powerUpKeys.add(GlobalKey<PowerUpState>());
