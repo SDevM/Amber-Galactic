@@ -6,23 +6,20 @@ const Set<Song> songs = {
   // Filenames with whitespace break package:audioplayers on iOS
   // (as of February 2022), so we use no whitespace.
   Song(
-    'background_music/ObservingTheStar.ogg',
-    'Observing The Star',
+    'background_music/bgm1.mp3',
+    'bgm1',
     artist: 'Unknown',
   ),
   Song(
-    'background_music/Orbital_Colossus.mp3',
-    'Orbital Colossus',
+    'background_music/bgm2.mp3',
+    'bgm2',
     artist: 'Unknown',
   ),
   Song(
-    'background_music/Space_Sprinkles.mp3',
-    'Space Sprinkles',
+    'background_music/bgm3.mp3',
+    'bgm3',
     artist: 'Unknown',
   ),
-  // Song('Mr_Smith-Azul.mp3', 'Azul', artist: 'Mr Smith'),
-  // Song('Mr_Smith-Sonorus.mp3', 'Sonorus', artist: 'Mr Smith'),
-  // Song('Mr_Smith-Sunday_Solitude.mp3', 'SundaySolitude', artist: 'Mr Smith'),
 };
 
 class Song {

@@ -1,10 +1,9 @@
 import 'dart:ui';
 
 class HitBox {
-  late Rect box;
+  double x,y;
+  double width, height;
   final int id;
 
-  HitBox(double x, double y, double width, double height, this.id) {
-    box = Rect.fromLTWH(x, y, width, height);
-  }
+  HitBox(this.x, this.y, this.width, this.height, this.id);
 }

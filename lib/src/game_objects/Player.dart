@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 
 import 'Sprite.dart';
@@ -26,28 +24,38 @@ class Player extends StatefulWidget {
 
 class PlayerState extends State<Player> {
   late Sprite _sprite;
-  final Image image = Image.asset('assets/icon.jpeg');
-  Map<String, Bool> powerUps = {};
+  final Image image =
+      Image.asset('assets/sprite_images/spaceships/ranger1.png');
+  Map<String, bool> powerUps = {};
   int lives = 3;
+  double _xOff = 0;
+  setOffsetX (double value) {
+    _xOff = value;
+  }
 
   @override
   Widget build(BuildContext context) {
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
-        widget.id, image!);
     return Positioned(
-      top: _sprite.box.top,
-      left: _sprite.box.left,
-      width: _sprite.box.width,
-      height: _sprite.box.height,
+      top: _sprite.y,
+      left: _sprite.x,
+      width: _sprite.width,
+      height: _sprite.height,
       child: Image(image: _sprite.image.image),
     );
   }
 
-  void move(double xOffset, double yOffset) {
-    Rect box = _sprite.box;
+  @override
+  void initState() {
+    super.initState();
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, image!);
+  }
+
+  void move(BoxConstraints bounds) {
     setState(() {
-      _sprite.box = Rect.fromLTWH(
-          box.left + xOffset, box.top + yOffset, box.width, box.height);
+      if (_sprite.x + _xOff >= 0 &&
+          _sprite.x + _xOff <= bounds.maxWidth - _sprite.width)
+        _sprite.x += _xOff;
     });
   }
 
