@@ -29,7 +29,8 @@ class PlayerState extends State<Player> {
   Map<String, bool> powerUps = {};
   int lives = 3;
   double _xOff = 0;
-  setOffsetX (double value) {
+
+  setOffsetX(double value) {
     _xOff = value;
   }
 
@@ -40,7 +41,7 @@ class PlayerState extends State<Player> {
       left: _sprite.x,
       width: _sprite.width,
       height: _sprite.height,
-      child: Image(image: _sprite.image.image),
+      child: Center(child: Image(image: _sprite.image.image)),
     );
   }
 

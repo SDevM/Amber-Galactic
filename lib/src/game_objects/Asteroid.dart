@@ -36,7 +36,7 @@ class AsteroidState extends State<Asteroid> {
       left: _sprite.x,
       width: _sprite.width,
       height: _sprite.height,
-      child: Image(image: _sprite.image.image),
+      child: Center(child: Image(image: _sprite.image.image)),
     );
   }
 
