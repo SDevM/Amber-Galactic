@@ -46,6 +46,7 @@ class SettingsScreen extends StatelessWidget {
                     color: Colors.white60,
                     fontSize: 55,
                     height: 1,
+                    letterSpacing: 10,
                   ),
                 ),
                 _gap,

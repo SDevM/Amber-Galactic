@@ -46,6 +46,7 @@ class MainMenuScreen extends StatelessWidget {
                   fontSize: 60,
                   height: 1,
                   color: Colors.white,
+                  letterSpacing: 10,
                 ),
               ),
             ),
