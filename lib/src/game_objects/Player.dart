@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'Sprite.dart';
 
@@ -26,7 +26,7 @@ class Player extends StatefulWidget {
 
 class PlayerState extends State<Player> {
   late Sprite _sprite;
-  final AssetImage image = {} as AssetImage;
+  final Image image = Image.asset('assets/icon.jpeg');
   Map<String, Bool> powerUps = {};
   int lives = 3;
 
@@ -39,7 +39,7 @@ class PlayerState extends State<Player> {
       left: _sprite.box.left,
       width: _sprite.box.width,
       height: _sprite.box.height,
-      child: Image(image: _sprite.image),
+      child: Image(image: _sprite.image.image),
     );
   }
 

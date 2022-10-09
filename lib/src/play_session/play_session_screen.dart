@@ -44,9 +44,13 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   late DateTime _startOfPlay;
 
   List<Player> player = [];
-  List<GlobalKey<PlayerState>> playerKeys = [];
+  List<GlobalKey<PlayerState>> playerKeys = [
+    GlobalKey<PlayerState>(),
+  ];
   List<PowerUp> powerUp = [];
-  List<GlobalKey<PowerUpState>> powerUpKeys = [];
+  List<GlobalKey<PowerUpState>> powerUpKeys = [
+    GlobalKey<PowerUpState>(),
+  ];
   List<Asteroid> asteroids = [];
   List<GlobalKey<AsteroidState>> asteroidKeys = [];
   late BoxConstraints screen;
@@ -66,32 +70,32 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         player.add(
           Player(
               key: playerKeys[0],
-              initX: screen.maxWidth / 2,
+              initX: screen.maxWidth / 2 - 25,
               initY: screen.maxHeight - 100,
               width: 50,
               height: 50,
               id: idCounter++),
         );
       }
-      if (timer.tick % 3600 == 0) {
-        powerUp.clear();
-        powerUp.add(PowerUp(
-            initX: screen.maxWidth / 2,
-            initY: screen.maxHeight / 2,
-            width: 30,
-            height: 30,
-            powerUp: 'ammo',
-            id: idCounter++));
-      }
-      if (timer.tick % ((60 - 0) / 1) == 0) {
-        asteroids.add(Asteroid(
-            initX: screen.maxWidth / 2,
-            initY: -50,
-            width: 50,
-            height: 50,
-            size: 1,
-            id: idCounter++));
-      }
+      // if (timer.tick % 3600 == 0) {
+      //   powerUp.clear();
+      //   powerUp.add(PowerUp(
+      //       initX: screen.maxWidth / 2,
+      //       initY: screen.maxHeight / 2,
+      //       width: 30,
+      //       height: 30,
+      //       powerUp: 'ammo',
+      //       id: idCounter++));
+      // }
+      // if (timer.tick % ((60 - 0) / 1) == 0) {
+      //   asteroids.add(Asteroid(
+      //       initX: screen.maxWidth / 2,
+      //       initY: -50,
+      //       width: 50,
+      //       height: 50,
+      //       size: 1,
+      //       id: idCounter++));
+      // }
       asteroidKeys.forEach((element) {
         element.currentState?.move();
         if ((element.currentState?.get_sprite().box.top ?? screen.maxHeight) >=
