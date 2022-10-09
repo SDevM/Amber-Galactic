@@ -23,76 +23,111 @@ class MainMenuScreen extends StatelessWidget {
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
-    return Scaffold(
-      backgroundColor: palette.backgroundMain,
-      body: ResponsiveScreen(
-        mainAreaProminence: 0.45,
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Flutter Game Template!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          "assets/images/universe_background.jpg",
+          fit: BoxFit.fitHeight,
+        ),
+        Container(
+          color: Color.fromARGB(100, 0, 0, 0),
+        ),
+        Scaffold(
+          backgroundColor: palette.backgroundMain,
+          body: ResponsiveScreen(
+            mainAreaProminence: 0.45,
+            squarishMainArea: Center(
+              child: const Text(
+                'Amber\nGalactic',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Fast Hand',
+                  fontSize: 60,
+                  height: 1,
+                  color: Colors.white,
+                ),
               ),
+            ),
+            rectangularMenuArea: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF630563),
+                    elevation: 10,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 35,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/play');
+                  },
+                  child: const Text('Play'),
+                ),
+                _gap,
+                if (gamesServicesController != null) ...[
+                  _hideUntilReady(
+                    ready: gamesServicesController.signedIn,
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          gamesServicesController.showAchievements(),
+                      child: const Text('Achievements'),
+                    ),
+                  ),
+                  _gap,
+                  _hideUntilReady(
+                    ready: gamesServicesController.signedIn,
+                    child: ElevatedButton(
+                      onPressed: () =>
+                          gamesServicesController.showLeaderboard(),
+                      child: const Text('Leaderboard'),
+                    ),
+                  ),
+                  _gap,
+                ],
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF630563),
+                    elevation: 4.0,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 35,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () => GoRouter.of(context).go('/settings'),
+                  child: const Text('Settings'),
+                ),
+                _gap,
+                Padding(
+                  padding: const EdgeInsets.only(top: 32),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: settingsController.muted,
+                    builder: (context, muted, child) {
+                      return IconButton(
+                        onPressed: () => settingsController.toggleMuted(),
+                        icon: Icon(
+                          muted ? Icons.volume_off : Icons.volume_up,
+                          color: Colors.white,
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                _gap,
+              ],
             ),
           ),
-        ),
-        rectangularMenuArea: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
-              },
-              child: const Text('Play'),
-            ),
-            _gap,
-            if (gamesServicesController != null) ...[
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: ElevatedButton(
-                  onPressed: () => gamesServicesController.showAchievements(),
-                  child: const Text('Achievements'),
-                ),
-              ),
-              _gap,
-              _hideUntilReady(
-                ready: gamesServicesController.signedIn,
-                child: ElevatedButton(
-                  onPressed: () => gamesServicesController.showLeaderboard(),
-                  child: const Text('Leaderboard'),
-                ),
-              ),
-              _gap,
-            ],
-            ElevatedButton(
-              onPressed: () => GoRouter.of(context).go('/settings'),
-              child: const Text('Settings'),
-            ),
-            _gap,
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: settingsController.muted,
-                builder: (context, muted, child) {
-                  return IconButton(
-                    onPressed: () => settingsController.toggleMuted(),
-                    icon: Icon(muted ? Icons.volume_off : Icons.volume_up),
-                  );
-                },
-              ),
-            ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
-          ],
-        ),
-      ),
+        )
+      ],
     );
   }
 
