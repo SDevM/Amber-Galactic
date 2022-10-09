@@ -55,9 +55,9 @@ flutter:
     - assets/sfx/space_sfx1/
 
   fonts:
-    - family: Permanent Marker
+    - family: FastHand
       fonts:
-        - asset: assets/Permanent_Marker/PermanentMarker-Regular.ttf
+        - asset: assets/fonts/FastHand-lgBMV.ttf
 
 flutter_icons:
   android: true
