@@ -25,7 +25,7 @@ class PowerUp extends StatefulWidget {
 
 class PowerUpState extends State<PowerUp> {
   late Sprite _sprite;
-  final Map<String, AssetImage> images = {};
+  final Map<String, Image> images = {};
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class PowerUpState extends State<PowerUp> {
       left: _sprite.box.left,
       width: _sprite.box.width,
       height: _sprite.box.height,
-      child: Image(image: _sprite.image),
+      child: Image(image: _sprite.image.image),
     );
   }
 
@@ -44,7 +44,7 @@ class PowerUpState extends State<PowerUp> {
     Rect box = _sprite.box;
     setState(() {
       _sprite.box = Rect.fromLTWH(
-          box.left, box.top + 10, box.width, box.height);
+          box.left, box.top + 1, box.width, box.height);
     });
   }
 

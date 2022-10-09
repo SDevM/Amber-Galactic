@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'Sprite.dart';
 
@@ -27,11 +27,11 @@ class Asteroid extends StatefulWidget {
 class AsteroidState extends State<Asteroid> {
   late double _speed;
   late Sprite _sprite;
-  final AssetImage image = {} as AssetImage;
+  final Image image = Image.asset('assets/icon.jpeg');
 
   @override
   Widget build(BuildContext context) {
-    _speed = 10 / widget.size;
+    _speed = 1 / widget.size;
     _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
         widget.id, image!);
     return Positioned(
@@ -39,7 +39,7 @@ class AsteroidState extends State<Asteroid> {
       left: _sprite.box.left,
       width: _sprite.box.width,
       height: _sprite.box.height,
-      child: Image(image: _sprite.image),
+      child: Image(image: _sprite.image.image),
     );
   }
 
