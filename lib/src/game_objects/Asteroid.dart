@@ -31,23 +31,26 @@ class AsteroidState extends State<Asteroid> {
 
   @override
   Widget build(BuildContext context) {
-    _speed = 1 / widget.size;
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
-        widget.id, image!);
     return Positioned(
-      top: _sprite.box.top,
-      left: _sprite.box.left,
-      width: _sprite.box.width,
-      height: _sprite.box.height,
+      top: _sprite.y,
+      left: _sprite.x,
+      width: _sprite.width,
+      height: _sprite.height,
       child: Image(image: _sprite.image.image),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _speed = 1 / widget.size;
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, image!);
+  }
+
   void move() {
-    Rect box = _sprite.box;
     setState(() {
-      _sprite.box =
-          Rect.fromLTWH(box.left, box.top + _speed, box.width, box.height);
+      _sprite.x++;
     });
   }
 

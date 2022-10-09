@@ -44,13 +44,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   late DateTime _startOfPlay;
 
   List<Player> player = [];
-  List<GlobalKey<PlayerState>> playerKeys = [
-    GlobalKey<PlayerState>(),
-  ];
+  List<GlobalKey<PlayerState>> playerKeys = [];
   List<PowerUp> powerUp = [];
-  List<GlobalKey<PowerUpState>> powerUpKeys = [
-    GlobalKey<PowerUpState>(),
-  ];
+  List<GlobalKey<PowerUpState>> powerUpKeys = [];
   List<Asteroid> asteroids = [];
   List<GlobalKey<AsteroidState>> asteroidKeys = [];
   late BoxConstraints screen;
@@ -59,7 +55,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
   bool firstRun = true;
 
-  void changes(Timer timer) {
+  void changes(Timer timer) async {
     if (!mounted) {
       ticker.cancel();
       return;
@@ -67,17 +63,19 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     setState(() {
       if (firstRun) {
         firstRun = false;
+        playerKeys.add(GlobalKey<PlayerState>());
         player.add(
           Player(
               key: playerKeys[0],
-              initX: screen.maxWidth / 2 - 25,
-              initY: screen.maxHeight - 100,
-              width: 50,
-              height: 50,
+              initX: screen.maxWidth / 2 - 37.5,
+              initY: screen.maxHeight - 137.5,
+              width: 75,
+              height: 75,
               id: idCounter++),
         );
       }
       // if (timer.tick % 3600 == 0) {
+      //   powerUpKeys.add(GlobalKey<PowerUpState>());
       //   powerUp.clear();
       //   powerUp.add(PowerUp(
       //       initX: screen.maxWidth / 2,
@@ -88,6 +86,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       //       id: idCounter++));
       // }
       // if (timer.tick % ((60 - 0) / 1) == 0) {
+      //   asteroidKeys.add(GlobalKey<AsteroidState>());
       //   asteroids.add(Asteroid(
       //       initX: screen.maxWidth / 2,
       //       initY: -50,
@@ -96,9 +95,12 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       //       size: 1,
       //       id: idCounter++));
       // }
+      playerKeys.forEach((element) {
+        element.currentState?.move(screen);
+      });
       asteroidKeys.forEach((element) {
         element.currentState?.move();
-        if ((element.currentState?.get_sprite().box.top ?? screen.maxHeight) >=
+        if ((element.currentState?.get_sprite().y ?? screen.maxHeight) >=
             screen.maxHeight) {
           int idx = asteroidKeys.indexOf(element);
           asteroids.removeAt(idx);
@@ -107,7 +109,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       });
       powerUpKeys.forEach((element) {
         element.currentState?.move();
-        if ((element.currentState?.get_sprite().box.top ?? screen.maxHeight) >=
+        if ((element.currentState?.get_sprite().y ?? screen.maxHeight) >=
             screen.maxHeight) {
           int idx = powerUpKeys.indexOf(element);
           powerUp.removeAt(idx);
@@ -134,25 +136,27 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         child: LayoutBuilder(builder: (layoutContext, constraints) {
           screen = constraints;
           ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
-          return Scaffold(
-            backgroundColor: palette.backgroundPlaySession,
-            body: Stack(
-              children: [
-                Background(),
-                ...player,
-                ...powerUp,
-                ...asteroids,
-                // SizedBox.expand(
-                //   child: Visibility(
-                //     visible: _duringCelebration,
-                //     child: IgnorePointer(
-                //       child: Confetti(
-                //         isStopped: !_duringCelebration,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-              ],
+          return GestureDetector(
+            child: Scaffold(
+              backgroundColor: palette.backgroundPlaySession,
+              body: Stack(
+                children: [
+                  Background(),
+                  ...player,
+                  ...powerUp,
+                  ...asteroids,
+                  // SizedBox.expand(
+                  //   child: Visibility(
+                  //     visible: _duringCelebration,
+                  //     child: IgnorePointer(
+                  //       child: Confetti(
+                  //         isStopped: !_duringCelebration,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
           );
         }),

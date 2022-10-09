@@ -53,10 +53,10 @@ flutter:
       - assets/music/background_music/
       - assets/sfx/
       - assets/sfx/space_sfx1/
-  fonts:
+   fonts:
     - family: FastHand
       fonts:
-        - asset: assets/fonts/FastHand-lgBMV.ttf
+        - asset: assets/fonts/FastHand.otf
 
 flutter_icons:
   android: true

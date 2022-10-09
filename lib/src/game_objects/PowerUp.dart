@@ -29,22 +29,25 @@ class PowerUpState extends State<PowerUp> {
 
   @override
   Widget build(BuildContext context) {
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
-        widget.id, images[widget.powerUp]!);
     return Positioned(
-      top: _sprite.box.top,
-      left: _sprite.box.left,
-      width: _sprite.box.width,
-      height: _sprite.box.height,
+      top: _sprite.y,
+      left: _sprite.x,
+      width: _sprite.width,
+      height: _sprite.height,
       child: Image(image: _sprite.image.image),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, images[widget.powerUp]!);
+  }
+
   void move() {
-    Rect box = _sprite.box;
     setState(() {
-      _sprite.box = Rect.fromLTWH(
-          box.left, box.top + 1, box.width, box.height);
+      _sprite.x++;
     });
   }
 
