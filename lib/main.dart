@@ -11,6 +11,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/game_results/lose_game_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
@@ -36,13 +37,15 @@ import 'src/settings/settings_screen.dart';
 import 'src/style/my_transition.dart';
 import 'src/style/palette.dart';
 import 'src/style/snack_bar.dart';
-import 'src/win_game/win_game_screen.dart';
 
 Future<void> main() async {
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
 
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   FirebaseCrashlytics? crashlytics;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   try {
@@ -158,10 +161,10 @@ class MyApp extends StatelessWidget {
                     path: 'lost',
                     pageBuilder: (context, state) {
                       final map = state.extra! as Map<String, dynamic>;
-                      final score = map['score'] as Score;
+                      final Score score = map['score'];
 
                       return buildMyTransition<void>(
-                        child: WinGameScreen(
+                        child: LoseGameScreen(
                           score: score,
                           key: const Key('lose game'),
                         ),

@@ -9,20 +9,31 @@ class Player extends StatefulWidget {
   final double initY;
   final double width;
   final double height;
-  final int lives;
-  final Map<String, Bool> powerUps;
-  const Player({Key? key, required this.initX, required this.initY,required this.width, required this.height,required this.lives,  required this.powerUps}):super(key: key);
+  final int id;
+
+  const Player(
+      {Key? key,
+      required this.initX,
+      required this.initY,
+      required this.width,
+      required this.height,
+      required this.id})
+      : super(key: key);
 
   @override
-  State<Player> createState() => _PlayerState();
+  State<Player> createState() => PlayerState();
 }
 
-class _PlayerState extends State<Player> {
+class PlayerState extends State<Player> {
   late Sprite _sprite;
-  final AssetImage image ={} as AssetImage;
+  final AssetImage image = {} as AssetImage;
+  Map<String, Bool> powerUps = {};
+  int lives = 3;
+
   @override
   Widget build(BuildContext context) {
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height, image!);
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, image!);
     return Positioned(
       top: _sprite.box.top,
       left: _sprite.box.left,
@@ -31,15 +42,20 @@ class _PlayerState extends State<Player> {
       child: Image(image: _sprite.image),
     );
   }
+
   void move(double xOffset, double yOffset) {
     Rect box = _sprite.box;
     setState(() {
-      _sprite.box = Rect.fromLTWH(box.left + xOffset, box.top + yOffset, box.width, box.height);
+      _sprite.box = Rect.fromLTWH(
+          box.left + xOffset, box.top + yOffset, box.width, box.height);
     });
   }
 
   void onCollide() {
     // TODO Collision stuff
   }
-}
 
+  Sprite get_sprite() {
+    return _sprite;
+  }
+}
