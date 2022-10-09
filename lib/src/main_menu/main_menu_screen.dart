@@ -38,16 +38,7 @@ class MainMenuScreen extends StatelessWidget {
           body: ResponsiveScreen(
             mainAreaProminence: 0.45,
             squarishMainArea: Center(
-              child: const Text(
-                'Amber\nGalactic',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'FastHand',
-                  fontSize: 60,
-                  height: 1,
-                  color: Colors.white,
-                ),
-              ),
+              child: GameLogo(),
             ),
             rectangularMenuArea: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -155,4 +146,68 @@ class MainMenuScreen extends StatelessWidget {
   }
 
   static const _gap = SizedBox(height: 10);
+}
+
+class GameLogo extends StatefulWidget {
+  const GameLogo({Key? key}) : super(key: key);
+
+  @override
+  State<GameLogo> createState() => _GameLogoState();
+}
+
+class _GameLogoState extends State<GameLogo>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _animation;
+  late Animation _animation2;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 600),
+    );
+
+    _animation = Tween(begin: 1, end: 0.8).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.ease,
+      ),
+    );
+
+    _animation2 = Tween(begin: 0.1, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.ease,
+      ),
+    );
+
+    _animationController.repeat(reverse: true);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: _animation,
+        builder: (context, snapshot) {
+          return Transform.rotate(
+            angle: _animation2.value,
+            child: Transform.scale(
+              scale: _animation.value,
+              child: Text(
+                'Amber\nGalactic',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'FastHand',
+                  fontSize: 60,
+                  height: 1,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
+        });
+  }
 }
