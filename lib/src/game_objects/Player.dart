@@ -57,14 +57,23 @@ class PlayerState extends State<Player> {
       if (_sprite.x + _xOff >= 0 &&
           _sprite.x + _xOff <= bounds.maxWidth - _sprite.width)
         _sprite.x += _xOff;
+      else if (_sprite.x + _xOff < 0)
+        _sprite.x = 0;
+      else if (_sprite.x + _xOff > bounds.maxWidth - _sprite.width)
+        _sprite.x = bounds.maxWidth - _sprite.width;
     });
   }
 
-  void onCollide() {
+  void onCollide(String type) {
     // TODO Collision stuff
   }
 
   Sprite get_sprite() {
     return _sprite;
   }
+}
+
+enum collideType {
+  ASTEROID,
+  POWER_UP_AMMO,
 }

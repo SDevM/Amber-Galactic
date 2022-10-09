@@ -139,7 +139,7 @@ class MyApp extends StatelessWidget {
                 pageBuilder: (context, state) => buildMyTransition<void>(
                       child: const PlaySessionScreen(
                           key: Key('play session')),
-                      color: context.watch<Palette>().backgroundLevelSelection,
+                      color: Colors.black,
                     ),
                 routes: [
                   // GoRoute(
