@@ -19,17 +19,17 @@ class Collider extends ListBase<HitBox> {
     l[index] = value;
   }
 
-  bool collisionCheck(HitBox box) {
-    bool flag = false;
+  int collisionCheck(HitBox box) {
+    int idx = -1;
     for (HitBox listBox in l) {
       if (box.id != listBox.id) {
         if (_collisionCompare(listBox, box)) {
-          flag = true;
+          idx = l.indexOf(listBox);
           break;
         }
       }
     }
-    return flag;
+    return idx;
   }
 
   bool _collisionCompare(HitBox box1, HitBox box2) {

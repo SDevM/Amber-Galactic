@@ -5,6 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:game_template/src/game_objects/Asteroid.dart';
 import 'package:game_template/src/game_objects/Player.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
@@ -32,7 +33,8 @@ class PlaySessionScreen extends StatefulWidget {
   State<PlaySessionScreen> createState() => _PlaySessionScreenState();
 }
 
-class _PlaySessionScreenState extends State<PlaySessionScreen> {
+class _PlaySessionScreenState extends State<PlaySessionScreen>
+    with SingleTickerProviderStateMixin<PlaySessionScreen> {
   static final _log = Logger('PlaySessionScreen');
 
   static const _celebrationDuration = Duration(milliseconds: 2000);
@@ -43,6 +45,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
 
   late DateTime _startOfPlay;
 
+  late LevelState game = LevelState(onLose: _playerLost);
   List<Player> player = [];
   List<GlobalKey<PlayerState>> playerKeys = [];
   List<PowerUp> powerUp = [];
@@ -51,15 +54,15 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   List<GlobalKey<AsteroidState>> asteroidKeys = [];
   late BoxConstraints screen;
   int idCounter = 0;
-  late Timer ticker;
+  late Ticker _ticker;
 
   bool firstRun = true;
 
-  void changes(Timer timer) async {
-    if (!mounted) {
-      ticker.cancel();
-      return;
-    }
+  // void changes(Timer timer) async {
+  void changes(Duration duration) async {
+    // if (!mounted) {
+    //   return;
+    // }
     setState(() {
       if (firstRun) {
         firstRun = false;
@@ -69,7 +72,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
               key: playerKeys[0],
               initX: screen.maxWidth / 2 - 37.5,
               initY: screen.maxHeight - 137.5,
-              width: 75,
+              width: 58,
               height: 75,
               id: idCounter++),
         );
@@ -123,54 +126,51 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   Widget build(BuildContext context) {
     final palette = context.watch<Palette>();
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => LevelState(
-            onLose: _playerLost,
-          ),
-        ),
-      ],
-      child: IgnorePointer(
-        ignoring: _duringCelebration,
-        child: LayoutBuilder(builder: (layoutContext, constraints) {
-          screen = constraints;
-          ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
-          return GestureDetector(
-            // Player Controls
-            onLongPressStart: (LongPressStartDetails details) {
-              // TODO Make the player x axis movement negative or positive based on the side of the screen
-            },
-            onLongPressEnd: (LongPressEndDetails details) {
-              // TODO Set the player x axis movement back to 0
-            },
-            onDoubleTap: () {
-              // TODO Teleport!
-            },
-            child: Scaffold(
-              backgroundColor: palette.backgroundPlaySession,
-              body: Stack(
-                children: [
-                  Background(),
-                  ...player,
-                  ...powerUp,
-                  ...asteroids,
-                  // SizedBox.expand(
-                  //   child: Visibility(
-                  //     visible: _duringCelebration,
-                  //     child: IgnorePointer(
-                  //       child: Confetti(
-                  //         isStopped: !_duringCelebration,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              ),
+    return IgnorePointer(
+      ignoring: _duringCelebration,
+      child: LayoutBuilder(builder: (layoutContext, constraints) {
+        screen = constraints;
+        // ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
+        return GestureDetector(
+          // Player Controls
+          onTapDown: (TapDownDetails details) {
+            // TODO Make the player x axis movement negative or positive based on the side of the screen
+            setState(() {
+              if (details.globalPosition.dx >= (screen.maxWidth / 2)) {
+                playerKeys[0].currentState?.setOffsetX(3);
+              } else {
+                playerKeys[0].currentState?.setOffsetX(-3);
+              }
+            });
+          },
+          onDoubleTap: () {
+            // TODO Teleport!
+          },
+          child: Scaffold(
+            backgroundColor: Colors.black,
+            body: Stack(
+              children: [
+                Background(
+                  img: Image.asset('assets/images/universe_background.jpg'),
+                ),
+                ...player,
+                ...powerUp,
+                ...asteroids,
+                // SizedBox.expand(
+                //   child: Visibility(
+                //     visible: _duringCelebration,
+                //     child: IgnorePointer(
+                //       child: Confetti(
+                //         isStopped: !_duringCelebration,
+                //       ),
+                //     ),
+                //   ),
+                // ),
+              ],
             ),
-          );
-        }),
-      ),
+          ),
+        );
+      }),
     );
   }
 
@@ -179,6 +179,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     super.initState();
 
     _startOfPlay = DateTime.now();
+    _ticker = this.createTicker(changes);
+    _ticker.start();
 
     // Preload ad for the win screen.
     final adsRemoved =
@@ -189,45 +191,20 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
     }
   }
 
-  Future<void> _playerLost() async {
+  _playerLost() {
     // _log.info('Level ${widget.level.number} won');
 
     final score = Score(
       DateTime.now().difference(_startOfPlay),
     );
 
-    // final playerProgress = context.read<PlayerProgress>();
-    // playerProgress.setLevelReached(widget.level.number);
-
-    // Let the player see the game just after winning for a bit.
-    await Future<void>.delayed(_preCelebrationDuration);
-    if (!mounted) return;
-
-    setState(() {
-      _duringCelebration = true;
-    });
-
-    final audioController = context.read<AudioController>();
-    audioController.playSfx(SfxType.congrats);
-
-    // final gamesServicesController = context.read<GamesServicesController?>();
-    // if (gamesServicesController != null) {
-    //   // Award achievement.
-    //   if (widget.level.awardsAchievement) {
-    //     await gamesServicesController.awardAchievement(
-    //       android: widget.level.achievementIdAndroid!,
-    //       iOS: widget.level.achievementIdIOS!,
-    //     );
-    //   }
-    //
-    //   // Send score to leaderboard.
-    //   await gamesServicesController.submitLeaderboardScore(score);
-    // }
-
-    /// Give the player some time to see the celebration animation.
-    await Future<void>.delayed(_celebrationDuration);
-    if (!mounted) return;
-
     GoRouter.of(context).go('/play/won', extra: {'score': score});
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _ticker.dispose();
+    super.dispose();
   }
 }

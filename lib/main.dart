@@ -43,9 +43,6 @@ Future<void> main() async {
   // the import statements at the top of this file.
   // See the 'Crashlytics' section of the main README.md file for details.
 
-  SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
   FirebaseCrashlytics? crashlytics;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
   //   try {
@@ -78,6 +75,9 @@ void guardedMain() {
   });
 
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   _log.info('Going full screen');
   SystemChrome.setEnabledSystemUIMode(
@@ -139,7 +139,7 @@ class MyApp extends StatelessWidget {
                 pageBuilder: (context, state) => buildMyTransition<void>(
                       child: const PlaySessionScreen(
                           key: Key('play session')),
-                      color: context.watch<Palette>().backgroundLevelSelection,
+                      color: Colors.black,
                     ),
                 routes: [
                   // GoRoute(
