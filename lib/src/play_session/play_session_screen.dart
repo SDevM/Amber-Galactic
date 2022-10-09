@@ -51,10 +51,15 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
   List<GlobalKey<AsteroidState>> asteroidKeys = [];
   late BoxConstraints screen;
   int idCounter = 0;
+  late Timer ticker;
 
   bool firstRun = true;
 
   void changes(Timer timer) {
+    if (!mounted) {
+      ticker.cancel();
+      return;
+    }
     setState(() {
       if (firstRun) {
         firstRun = false;
@@ -89,8 +94,22 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
       }
       asteroidKeys.forEach((element) {
         element.currentState?.move();
+        if ((element.currentState?.get_sprite().box.top ?? screen.maxHeight) >=
+            screen.maxHeight) {
+          int idx = asteroidKeys.indexOf(element);
+          asteroids.removeAt(idx);
+          asteroidKeys.removeAt(idx);
+        }
       });
-      powerUpKeys[0].currentState?.move();
+      powerUpKeys.forEach((element) {
+        element.currentState?.move();
+        if ((element.currentState?.get_sprite().box.top ?? screen.maxHeight) >=
+            screen.maxHeight) {
+          int idx = powerUpKeys.indexOf(element);
+          powerUp.removeAt(idx);
+          powerUpKeys.removeAt(idx);
+        }
+      });
     });
   }
 
@@ -110,7 +129,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen> {
         ignoring: _duringCelebration,
         child: LayoutBuilder(builder: (layoutContext, constraints) {
           screen = constraints;
-          Timer.periodic(const Duration(milliseconds: 30), changes);
+          ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
           return Scaffold(
             backgroundColor: palette.backgroundPlaySession,
             body: Stack(

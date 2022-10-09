@@ -54,4 +54,8 @@ class PlayerState extends State<Player> {
   void onCollide() {
     // TODO Collision stuff
   }
+
+  Sprite get_sprite() {
+    return _sprite;
+  }
 }

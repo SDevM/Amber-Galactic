@@ -51,4 +51,8 @@ class PowerUpState extends State<PowerUp> {
   void onCollide() {
     // TODO Collision stuff
   }
+
+  Sprite get_sprite() {
+    return _sprite;
+  }
 }

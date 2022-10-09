@@ -50,4 +50,8 @@ class AsteroidState extends State<Asteroid> {
           Rect.fromLTWH(box.left, box.top + _speed, box.width, box.height);
     });
   }
+
+  Sprite get_sprite() {
+    return _sprite;
+  }
 }
