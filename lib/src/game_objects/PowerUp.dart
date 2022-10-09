@@ -7,18 +7,30 @@ class PowerUp extends StatefulWidget {
   final double width;
   final double height;
   final String powerUp;
-  const PowerUp({Key? key, required this.initX, required this.initY, required this.width, required this.height, required this.powerUp}) : super(key: key);
+  final int id;
+
+  const PowerUp(
+      {Key? key,
+      required this.initX,
+      required this.initY,
+      required this.width,
+      required this.height,
+      required this.powerUp,
+      required this.id})
+      : super(key: key);
 
   @override
-  State<PowerUp> createState() => _PowerUpState();
+  State<PowerUp> createState() => PowerUpState();
 }
 
-class _PowerUpState extends State<PowerUp> {
+class PowerUpState extends State<PowerUp> {
   late Sprite _sprite;
   final Map<String, AssetImage> images = {};
+
   @override
   Widget build(BuildContext context) {
-    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height, images[widget.powerUp]!);
+    _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
+        widget.id, images[widget.powerUp]!);
     return Positioned(
       top: _sprite.box.top,
       left: _sprite.box.left,
@@ -28,14 +40,19 @@ class _PowerUpState extends State<PowerUp> {
     );
   }
 
-  void move(double xOffset, double yOffset) {
+  void move() {
     Rect box = _sprite.box;
     setState(() {
-      _sprite.box = Rect.fromLTWH(box.left + xOffset, box.top + yOffset, box.width, box.height);
+      _sprite.box = Rect.fromLTWH(
+          box.left, box.top + 10, box.width, box.height);
     });
   }
 
   void onCollide() {
     // TODO Collision stuff
+  }
+
+  Sprite get_sprite() {
+    return _sprite;
   }
 }
