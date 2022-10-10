@@ -14,6 +14,7 @@ import 'package:game_template/src/game_objects/GameObjectWidget.dart';
 import 'package:game_template/src/game_objects/Player.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
 import 'package:game_template/src/game_objects/Sprite.dart';
+import 'package:game_template/src/play_session/overlay.dart';
 import 'package:game_template/src/style/background.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
@@ -101,22 +102,23 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       //       powerUp: power.AMMO,
       //       id: idCounter++));
       // }
-      if (changesCounter % nextAst == 0.0) {
-        nextAst = rand.nextInt(10) + 50;
-        changesCounter = 0;
-        print('New Asteroid');
-        double randX = (rand.nextDouble() * screen.maxWidth);
-        asteroids.add(
-          Asteroid(
-            randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
-            -150,
-            50,
-            50,
-            1,
-          ),
-        );
-        asterColl.l.add(asteroids.last);
-      }
+      // if (changesCounter % nextAst == 0.0) {
+      //   nextAst = rand.nextInt(10) + 50;
+      //   changesCounter = 0;
+      //   print('New Asteroid');
+      //   double randX = (rand.nextDouble() * screen.maxWidth);
+      //   asteroids.add(
+      //     Asteroid(
+      //       randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
+      //       -150,
+      //       50,
+      //       50,
+      //       1,
+      //     ),
+      //   );
+      //   asterColl.l.add(asteroids.last);
+      // }
+
       player?.move(screen);
 
       List<int> remIdxAst = [];
@@ -181,6 +183,10 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
                 player != null ? GOW(sprite: player!) : Container(),
                 powerUp != null ? GOW(sprite: powerUp!) : Container(),
                 ...(asteroids.map((e) => GOW(sprite: e))),
+
+                // <------------OVERLAY WIDGET------------->
+
+                OverlayPanel(),
                 // SizedBox.expand(
                 //   child: Visibility(
                 //     visible: _duringCelebration,
