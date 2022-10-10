@@ -3,13 +3,17 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:game_template/src/game_internals/collider.dart';
 import 'package:game_template/src/game_objects/Asteroid.dart';
+import 'package:game_template/src/game_objects/GameObjectWidget.dart';
 import 'package:game_template/src/game_objects/Player.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
+import 'package:game_template/src/game_objects/Sprite.dart';
 import 'package:game_template/src/style/background.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
@@ -47,13 +51,11 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   late DateTime _startOfPlay;
 
   late LevelState game = LevelState(onLose: _playerLost);
-  List<Player> player = [];
-  List<GlobalKey<PlayerState>> playerKeys = [];
-  List<PowerUp> powerUp = [];
-  List<GlobalKey<PowerUpState>> powerUpKeys = [];
-  List<Asteroid> asteroids = [];
-  List<GlobalKey<AsteroidState>> asteroidKeys = [];
-  List<inputType> inputPublisher = [];
+  Player? player;
+  PowerUp? powerUp;
+  List<Asteroid> asteroids = <Asteroid>[];
+  Collider<Asteroid> asterColl = Collider();
+  List<inputType> inputPublisher = <inputType>[];
   late BoxConstraints screen;
   int idCounter = 0;
   late Ticker _ticker;
@@ -61,31 +63,28 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   bool firstRun = true;
 
   int changesCounter = 0;
-  int nextAst = Random().nextInt(10) + 50;
-  void changes(Duration duration) async {
+  int nextAst = rand.nextInt(10) + 50;
+
+  void changes(Duration duration) {
     changesCounter++;
     setState(() {
       if (firstRun) {
         firstRun = false;
-        playerKeys.add(GlobalKey<PlayerState>());
-        player.add(
-          Player(
-              key: playerKeys[0],
-              initX: screen.maxWidth / 2 - 37.5,
-              initY: screen.maxHeight - 137.5,
-              width: 58,
-              height: 75,
-              id: idCounter++),
+        player = Player(
+          screen.maxWidth / 2 - 37.5,
+          screen.maxHeight - 137.5,
+          58,
+          75,
         );
       }
       if (inputPublisher.isNotEmpty) {
         inputType input = inputPublisher.removeLast();
         switch (input) {
           case (inputType.TOUCH_LEFT):
-            playerKeys[0].currentState?.setOffsetX(-4);
+            player?.xOff = -4;
             break;
           case (inputType.TOUCH_RIGHT):
-            playerKeys[0].currentState?.setOffsetX(4);
+            player?.xOff = 4;
             break;
           case (inputType.DOUBLE_TOUCH):
             break;
@@ -99,56 +98,53 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       //       initY: screen.maxHeight / 2,
       //       width: 30,
       //       height: 30,
-      //       powerUp: 'ammo',
+      //       powerUp: power.AMMO,
       //       id: idCounter++));
       // }
-      if (changesCounter % (nextAst) == 0.0) {
-        nextAst = Random().nextInt(10) + 50;
+      if (changesCounter % nextAst == 0.0) {
+        nextAst = rand.nextInt(10) + 50;
+        changesCounter = 0;
         print('New Asteroid');
-        double randX = (Random().nextDouble() * screen.maxWidth);
-        asteroidKeys.add(GlobalKey<AsteroidState>());
-        asteroids.add(Asteroid(
-            key: asteroidKeys[asteroidKeys.length - 1],
-            initX: randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
-            initY: -150,
-            width: 50,
-            height: 50,
-            size: 1,
-            id: idCounter++));
+        double randX = (rand.nextDouble() * screen.maxWidth);
+        asteroids.add(
+          Asteroid(
+            randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
+            -150,
+            50,
+            50,
+            1,
+          ),
+        );
+        asterColl.l.add(asteroids.last);
       }
-      playerKeys.forEach((element) {
-        element.currentState?.move(screen);
-      });
+      player?.move(screen);
 
       List<int> remIdxAst = [];
-      asteroidKeys.forEach((element) async {
-        element.currentState?.move();
-        double Y = element.currentState?.get_sprite().y ?? 0;
+      asteroids.forEach((element) async {
+        element.move();
+        double Y = element.y;
         if (Y >= screen.maxHeight) {
-          int idx = asteroidKeys.indexOf(element);
+          int idx = asteroids.indexOf(element);
           remIdxAst.add(idx);
         }
       });
       remIdxAst.forEach((element) {
         print(
-            'Object:${asteroidKeys[element].currentState?.widget.id} Removed! Because object is out of bounds.');
+            'Object:${asteroids[element].hashCode} Removed! Because object is out of bounds.');
         asteroids.removeAt(element);
-        asteroidKeys.removeAt(element);
+        asterColl.l.removeAt(element);
       });
 
-      List<int> remIdxPow = [];
-      powerUpKeys.forEach((element) {
-        element.currentState?.move();
-        if ((element.currentState?.get_sprite().y ?? screen.maxHeight) >=
-            screen.maxHeight) {
-          int idx = powerUpKeys.indexOf(element);
-          remIdxPow.add(idx);
+      if (powerUp != null && powerUp!.y >= screen.maxHeight) {
+        powerUp = null;
+      }
+
+      if (player != null) {
+        bool asterCollide = asterColl.collisionCheck(player!) != -1;
+        if (asterCollide) {
+          print('Collision!');
         }
-      });
-      remIdxPow.forEach((element) {
-        powerUp.removeAt(element);
-        powerUpKeys.removeAt(element);
-      });
+      }
     });
   }
 
@@ -181,9 +177,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
                 Background(
                   img: Image.asset('assets/images/universe_background.jpg'),
                 ),
-                ...player,
-                ...powerUp,
-                ...asteroids,
+                player != null ? GOW(sprite: player!) : Container(),
+                powerUp != null ? GOW(sprite: powerUp!) : Container(),
+                ...(asteroids.map((e) => GOW(sprite: e))),
                 // SizedBox.expand(
                 //   child: Visibility(
                 //     visible: _duringCelebration,
@@ -237,6 +233,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
     super.dispose();
   }
 }
+
+final rand = Random();
 
 enum inputType {
   TOUCH_RIGHT,
