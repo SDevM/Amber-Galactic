@@ -38,7 +38,17 @@ class MainMenuScreen extends StatelessWidget {
           body: ResponsiveScreen(
             mainAreaProminence: 0.45,
             squarishMainArea: Center(
-              child: GameLogo(),
+              child: const Text(
+                'Amber\nGalactic',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'FastHand',
+                  fontSize: 60,
+                  height: 1,
+                  color: Colors.white,
+                  letterSpacing: 10,
+                ),
+              ),
             ),
             rectangularMenuArea: Column(
               mainAxisAlignment: MainAxisAlignment.end,
