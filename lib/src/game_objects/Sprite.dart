@@ -4,9 +4,13 @@ import 'package:flutter/material.dart';
 class Sprite extends HitBox {
   Image image;
 
-  Sprite(super.x, super.y, super.width, super.height, super.id, this.image);
+  Sprite(super.x, super.y, super.width, super.height, this.image);
 
   change(Image newImage) {
     image = newImage;
   }
+}
+
+abstract class Collidable {
+  void onCollide() {}
 }
