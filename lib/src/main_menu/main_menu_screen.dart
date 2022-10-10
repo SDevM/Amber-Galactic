@@ -38,17 +38,7 @@ class MainMenuScreen extends StatelessWidget {
           body: ResponsiveScreen(
             mainAreaProminence: 0.45,
             squarishMainArea: Center(
-              child: const Text(
-                'Amber\nGalactic',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'FastHand',
-                  fontSize: 60,
-                  height: 1,
-                  color: Colors.white,
-                  letterSpacing: 10,
-                ),
-              ),
+              child: GameLogo(),
             ),
             rectangularMenuArea: Column(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -159,7 +149,7 @@ class MainMenuScreen extends StatelessWidget {
 }
 
 class GameLogo extends StatefulWidget {
-  const GameLogo({Key? key}) : super(key: key);
+  const GameLogo({super.key});
 
   @override
   State<GameLogo> createState() => _GameLogoState();
