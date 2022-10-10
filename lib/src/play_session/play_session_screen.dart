@@ -142,7 +142,8 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       if (player != null) {
         bool asterCollide = asterColl.collisionCheck(player!) != -1;
         if (asterCollide) {
-          print('Collision!');
+          player!.onCollide();
+          if (player!.lives <= 0) game.evaluate(true);
         }
       }
     });
@@ -217,11 +218,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
 
   _playerLost() {
     // _log.info('Level ${widget.level.number} won');
-
     final score = Score(
       DateTime.now().difference(_startOfPlay),
     );
-
     GoRouter.of(context).go('/play/lost', extra: {'score': score});
   }
 

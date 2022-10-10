@@ -9,6 +9,7 @@ class Player extends Sprite implements Collidable {
     power.AMMO: false,
   };
   int xOff = 0;
+  bool immune = false;
 
   Player(double x, double y, double width, double height)
       : super(
@@ -31,6 +32,13 @@ class Player extends Sprite implements Collidable {
   @override
   void onCollide() {
     // TODO: implement onCollide
+    if (!immune) {
+      lives--;
+      immune = true;
+      Future.delayed(Duration(seconds: 2), () {
+        immune = false;
+      });
+    }
   }
 }
 

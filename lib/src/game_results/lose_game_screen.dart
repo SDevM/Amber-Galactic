@@ -56,14 +56,17 @@ class LoseGameScreen extends StatelessWidget {
                 'Score: ${score.score}\n'
                 'Time: ${score.formattedTime}',
                 style: const TextStyle(
-                    fontFamily: 'Permanent Marker', fontSize: 20),
+                  fontFamily: 'Permanent Marker',
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
             ),
           ],
         ),
         rectangularMenuArea: ElevatedButton(
           onPressed: () {
-            GoRouter.of(context).pop();
+            GoRouter.of(context).go('/');
           },
           child: const Text('Continue'),
         ),
