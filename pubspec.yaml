@@ -44,7 +44,7 @@ flutter:
       - assets/images/
       - assets/sprite_images/
       - assets/sprite_images/asteroids/
-      - assets/sprite_images/asteroids/hjm-random_asteroids-v3/
+      - assets/sprite_images/asteroids/space_rocks/
       - assets/sprite_images/beams/
       - assets/sprite_images/explosions/
       - assets/sprite_images/explosions/2d-special-effects/

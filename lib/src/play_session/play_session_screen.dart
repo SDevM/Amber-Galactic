@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -59,11 +60,10 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
 
   bool firstRun = true;
 
-  // void changes(Timer timer) async {
+  int changesCounter = 0;
+  int nextAst = Random().nextInt(10) + 50;
   void changes(Duration duration) async {
-    // if (!mounted) {
-    //   return;
-    // }
+    changesCounter++;
     setState(() {
       if (firstRun) {
         firstRun = false;
@@ -82,13 +82,12 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         inputType input = inputPublisher.removeLast();
         switch (input) {
           case (inputType.TOUCH_LEFT):
-            playerKeys[0].currentState?.setOffsetX(-3);
+            playerKeys[0].currentState?.setOffsetX(-4);
             break;
           case (inputType.TOUCH_RIGHT):
-            playerKeys[0].currentState?.setOffsetX(3);
+            playerKeys[0].currentState?.setOffsetX(4);
             break;
           case (inputType.DOUBLE_TOUCH):
-            game.evaluate(true);
             break;
         }
       }
@@ -103,36 +102,52 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       //       powerUp: 'ammo',
       //       id: idCounter++));
       // }
-      // if (timer.tick % ((60 - 0) / 1) == 0) {
-      //   asteroidKeys.add(GlobalKey<AsteroidState>());
-      //   asteroids.add(Asteroid(
-      //       initX: screen.maxWidth / 2,
-      //       initY: -50,
-      //       width: 50,
-      //       height: 50,
-      //       size: 1,
-      //       id: idCounter++));
-      // }
+      if (changesCounter % (nextAst) == 0.0) {
+        nextAst = Random().nextInt(10) + 50;
+        print('New Asteroid');
+        double randX = (Random().nextDouble() * screen.maxWidth);
+        asteroidKeys.add(GlobalKey<AsteroidState>());
+        asteroids.add(Asteroid(
+            key: asteroidKeys[asteroidKeys.length - 1],
+            initX: randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
+            initY: -150,
+            width: 50,
+            height: 50,
+            size: 1,
+            id: idCounter++));
+      }
       playerKeys.forEach((element) {
         element.currentState?.move(screen);
       });
-      asteroidKeys.forEach((element) {
+
+      List<int> remIdxAst = [];
+      asteroidKeys.forEach((element) async {
         element.currentState?.move();
-        if ((element.currentState?.get_sprite().y ?? screen.maxHeight) >=
-            screen.maxHeight) {
+        double Y = element.currentState?.get_sprite().y ?? 0;
+        if (Y >= screen.maxHeight) {
           int idx = asteroidKeys.indexOf(element);
-          asteroids.removeAt(idx);
-          asteroidKeys.removeAt(idx);
+          remIdxAst.add(idx);
         }
       });
+      remIdxAst.forEach((element) {
+        print(
+            'Object:${asteroidKeys[element].currentState?.widget.id} Removed! Because object is out of bounds.');
+        asteroids.removeAt(element);
+        asteroidKeys.removeAt(element);
+      });
+
+      List<int> remIdxPow = [];
       powerUpKeys.forEach((element) {
         element.currentState?.move();
         if ((element.currentState?.get_sprite().y ?? screen.maxHeight) >=
             screen.maxHeight) {
           int idx = powerUpKeys.indexOf(element);
-          powerUp.removeAt(idx);
-          powerUpKeys.removeAt(idx);
+          remIdxPow.add(idx);
         }
+      });
+      remIdxPow.forEach((element) {
+        powerUp.removeAt(element);
+        powerUpKeys.removeAt(element);
       });
     });
   }
@@ -145,7 +160,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       ignoring: _duringCelebration,
       child: LayoutBuilder(builder: (layoutContext, constraints) {
         screen = constraints;
-        // ticker = Timer.periodic(const Duration(milliseconds: 30), changes);
         return GestureDetector(
           // Player Controls
           onTapDown: (TapDownDetails details) {
@@ -218,6 +232,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   @override
   void dispose() {
     // TODO: implement dispose
+    print('DISPOSE!');
     _ticker.dispose();
     super.dispose();
   }

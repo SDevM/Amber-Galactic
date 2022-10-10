@@ -25,9 +25,9 @@ class Asteroid extends StatefulWidget {
 }
 
 class AsteroidState extends State<Asteroid> {
-  late double _speed;
+  final double _speed = 2;
   late Sprite _sprite;
-  final Image image = Image.asset('assets/icon.jpeg');
+  final Image image = Image.asset('assets/sprite_images/asteroids/space_rocks/asteroid1.png');
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +43,14 @@ class AsteroidState extends State<Asteroid> {
   @override
   void initState() {
     super.initState();
-    _speed = 1 / widget.size;
     _sprite = Sprite(widget.initX, widget.initY, widget.width, widget.height,
         widget.id, image!);
   }
 
   void move() {
+    print('Moved from y = ${_sprite.y}');
     setState(() {
-      _sprite.x++;
+      _sprite.y+= _speed / widget.size;
     });
   }
 
