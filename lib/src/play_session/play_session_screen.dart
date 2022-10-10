@@ -162,9 +162,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         screen = constraints;
         return GestureDetector(
           // Player Controls
-          onTapDown: (TapDownDetails details) {
+          onHorizontalDragEnd: (DragEndDetails details) {
             // TODO Make the player x axis movement negative or positive based on the side of the screen
-            if (details.globalPosition.dx >= (screen.maxWidth / 2)) {
+            if (details.velocity.pixelsPerSecond.dx >= (screen.maxWidth / 2)) {
               inputPublisher.add(inputType.TOUCH_RIGHT);
             } else {
               inputPublisher.add(inputType.TOUCH_LEFT);
