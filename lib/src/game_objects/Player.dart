@@ -6,7 +6,7 @@ import 'Sprite.dart';
 class Player extends Sprite implements Collidable {
   int lives = 3;
   Map<power, bool> powerUps = {
-    power.AMMO: false,
+    power.AMMO: true,
   };
   int xOff = 0;
   bool immune = false;
@@ -30,14 +30,27 @@ class Player extends Sprite implements Collidable {
   }
 
   @override
-  void onCollide() {
+  void onCollide(collideType source) {
     // TODO: implement onCollide
-    if (!immune) {
-      lives--;
-      immune = true;
-      Future.delayed(Duration(seconds: 2), () {
-        immune = false;
-      });
+    switch (source) {
+      case (collideType.ASTEROID):
+        if (!immune) {
+          lives--;
+          immune = true;
+          Future.delayed(Duration(seconds: 2), () {
+            immune = false;
+          });
+        }
+        break;
+      case (collideType.POWER_UP_AMMO):
+        powerUps.values.forEach((element) {
+          element = false;
+        });
+        powerUps[power.AMMO] = true;
+        Future.delayed(Duration(seconds: 20), () {
+          powerUps[power.AMMO] = false;
+        });
+        break;
     }
   }
 }
@@ -112,8 +125,3 @@ class Player extends Sprite implements Collidable {
 //     return _sprite;
 //   }
 // }
-
-enum collideType {
-  ASTEROID,
-  POWER_UP_AMMO,
-}

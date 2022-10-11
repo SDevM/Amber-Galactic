@@ -163,6 +163,8 @@ class _GameLogoState extends State<GameLogo>
 
   @override
   void initState() {
+    super.initState();
+
     _animationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 600),
@@ -183,8 +185,13 @@ class _GameLogoState extends State<GameLogo>
     );
 
     _animationController.repeat(reverse: true);
+  }
 
-    super.initState();
+  @override
+  void dispose() {
+    _animationController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -192,19 +199,16 @@ class _GameLogoState extends State<GameLogo>
     return AnimatedBuilder(
         animation: _animation,
         builder: (context, snapshot) {
-          return Transform.rotate(
-            angle: _animation2.value,
-            child: Transform.scale(
-              scale: _animation.value,
-              child: Text(
-                'Amber\nGalactic',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'FastHand',
-                  fontSize: 60,
-                  height: 1,
-                  color: Colors.white,
-                ),
+          return Transform.scale(
+            scale: _animation.value,
+            child: Text(
+              'Amber\nGalactic',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'FastHand',
+                fontSize: 55,
+                height: 1,
+                color: Colors.white,
               ),
             ),
           );

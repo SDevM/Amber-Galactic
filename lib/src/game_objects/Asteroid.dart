@@ -3,25 +3,25 @@ import 'package:flutter/material.dart';
 import 'Sprite.dart';
 
 class Asteroid extends Sprite implements Collidable {
-  final int Size;
-  final double speed = 2;
+  final double size;
+  final double speed = 3;
 
-  Asteroid(double x, double y, double width, double height, this.Size)
+  Asteroid(double x, double y, double width, double height, this.size)
       : super(
           x,
           y,
-          width,
-          height,
+          width * size,
+          height * size,
           Image.asset(
               'assets/sprite_images/asteroids/space_rocks/asteroid1.png'),
         );
 
   void move() {
-    this.y += speed / Size;
+    this.y += speed * size;
   }
 
   @override
-  void onCollide() {
+  void onCollide(collideType source) {
     // TODO: implement onCollide
   }
 }

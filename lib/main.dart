@@ -41,7 +41,7 @@ import 'src/style/snack_bar.dart';
 Future<void> main() async {
   // To enable Firebase Crashlytics, uncomment the following lines and
   // the import statements at the top of this file.
-  // See the 'Crashlytics' section of the main README.md file for details.
+  // See the 'Crashlytics' n README.md file for details.
 
   FirebaseCrashlytics? crashlytics;
   // if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
@@ -128,57 +128,60 @@ Logger _log = Logger('main.dart');
 
 class MyApp extends StatelessWidget {
   static final _router = GoRouter(
-    routes: [
+    routes: <RouteBase>[
       GoRoute(
-          path: '/',
-          builder: (context, state) =>
-              const MainMenuScreen(key: Key('main menu')),
-          routes: [
-            GoRoute(
-                path: 'play',
-                pageBuilder: (context, state) => buildMyTransition<void>(
-                      child: const PlaySessionScreen(
-                          key: Key('play session')),
-                      color: Colors.black,
-                    ),
-                routes: [
-                  // GoRoute(
-                  //   path: 'session/:level',
-                  //   pageBuilder: (context, state) {
-                  //     final levelNumber = int.parse(state.params['level']!);
-                  //     final level = gameLevels
-                  //         .singleWhere((e) => e.number == levelNumber);
-                  //     return buildMyTransition<void>(
-                  //       child: PlaySessionScreen(
-                  //         level,
-                  //         key: const Key('play session'),
-                  //       ),
-                  //       color: context.watch<Palette>().backgroundPlaySession,
-                  //     );
-                  //   },
-                  // ),
-                  GoRoute(
-                    path: 'lost',
-                    pageBuilder: (context, state) {
-                      final map = state.extra! as Map<String, dynamic>;
-                      final Score score = map['score'];
-
-                      return buildMyTransition<void>(
-                        child: LoseGameScreen(
-                          score: score,
-                          key: const Key('lose game'),
-                        ),
-                        color: context.watch<Palette>().backgroundPlaySession,
-                      );
-                    },
-                  )
-                ]),
-            GoRoute(
-              path: 'settings',
-              builder: (context, state) =>
-                  const SettingsScreen(key: Key('settings')),
+        path: '/',
+        builder: (context, state) =>
+            const MainMenuScreen(key: Key('main menu')),
+        routes: <RouteBase>[
+          GoRoute(
+            path: 'play',
+            pageBuilder: (context, state) => buildMyTransition<void>(
+              child: const PlaySessionScreen(key: Key('play session')),
+              color: Colors.black,
             ),
-          ]),
+            routes: <RouteBase>[
+              // GoRoute(
+              //   path: 'session/:level',
+              //   pageBuilder: (context, state) {
+              //     final levelNumber = int.parse(state.params['level']!);
+              //     final level = gameLevels
+              //         .singleWhere((e) => e.number == levelNumber);
+              //     return buildMyTransition<void>(
+              //       child: PlaySessionScreen(
+              //         level,
+              //         key: const Key('play session'),
+              //       ),
+              //       color: context.watch<Palette>().backgroundPlaySession,
+              //     );
+              //   },
+              // ),
+              GoRoute(
+                path: 'lost',
+                pageBuilder: (context, state) {
+                  // Map<String, dynamic> map =
+                  //     state.extra as Map<String, dynamic>;
+                  // final score = map['score'];
+
+                  return buildMyTransition<void>(
+                    child: LoseGameScreen(
+                      // score: score ?? Score(Duration(milliseconds: 0)),
+                      score: Score(Duration(milliseconds: 0)),
+                      key: const Key('lose game'),
+                    ),
+                    color: context.watch<Palette>().backgroundPlaySession,
+                  );
+                },
+              )
+            ],
+          ),
+          GoRoute(
+            path: 'settings',
+            builder: (context, state) =>
+                const SettingsScreen(key: Key('settings')),
+          ),
+        ],
+      ),
     ],
   );
 

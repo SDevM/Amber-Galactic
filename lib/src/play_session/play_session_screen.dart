@@ -9,11 +9,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:game_template/src/game_internals/collider.dart';
+import 'package:game_template/src/game_objects/Ammo1.dart';
 import 'package:game_template/src/game_objects/Asteroid.dart';
 import 'package:game_template/src/game_objects/GameObjectWidget.dart';
 import 'package:game_template/src/game_objects/Player.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
 import 'package:game_template/src/game_objects/Sprite.dart';
+import 'package:game_template/src/play_session/overlay.dart';
 import 'package:game_template/src/style/background.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart' hide Level;
@@ -53,19 +55,24 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   late LevelState game = LevelState(onLose: _playerLost);
   Player? player;
   PowerUp? powerUp;
+  Collider<PowerUp> powColl = Collider();
   List<Asteroid> asteroids = <Asteroid>[];
   Collider<Asteroid> asterColl = Collider();
+  List<Ammo1> munitions = <Ammo1>[];
   List<inputType> inputPublisher = <inputType>[];
   late BoxConstraints screen;
   int idCounter = 0;
   late Ticker _ticker;
+  bool paused = false;
 
   bool firstRun = true;
 
   int changesCounter = 0;
+  int lastCounter = 0;
   int nextAst = rand.nextInt(10) + 50;
 
   void changes(Duration duration) {
+    if (paused) return;
     changesCounter++;
     setState(() {
       if (firstRun) {
@@ -101,26 +108,51 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       //       powerUp: power.AMMO,
       //       id: idCounter++));
       // }
-      if (changesCounter % nextAst == 0.0) {
-        nextAst = rand.nextInt(10) + 50;
-        changesCounter = 0;
+      if (changesCounter >= lastCounter + nextAst) {
+        nextAst = rand.nextInt(25) + 30;
+        lastCounter = changesCounter;
         print('New Asteroid');
         double randX = (rand.nextDouble() * screen.maxWidth);
+        double size = (rand.nextDouble() * 2) + 1;
         asteroids.add(
           Asteroid(
-            randX > (screen.maxWidth - 50) ? screen.maxWidth - 50 : randX,
+            randX > (screen.maxWidth - 50 * size)
+                ? screen.maxWidth - 50 * size
+                : randX,
             -150,
             50,
-            50,
-            1,
+            45,
+            size,
           ),
         );
         asterColl.l.add(asteroids.last);
       }
       player?.move(screen);
+      if (changesCounter % 30 == 0 &&
+          player != null &&
+          player!.powerUps[power.AMMO]!) {
+        print('New Munitions');
+        munitions.add(Ammo1(player!.x + player!.width / 2 - 7.5, player!.y - 15,
+            51 / 3, 111 / 3));
+      }
+
+      List<int> remIdxMun = [];
+      munitions.forEach((element) {
+        element.move();
+        double Y = element.y;
+        if (Y <= screen.maxHeight * 1 / 4) {
+          int idx = munitions.indexOf(element);
+          remIdxMun.add(idx);
+        }
+      });
+      remIdxMun.forEach((element) {
+        print(
+            'Object:${munitions[element].hashCode} Removed! Because object is out of bounds.');
+        munitions.removeAt(element);
+      });
 
       List<int> remIdxAst = [];
-      asteroids.forEach((element) async {
+      asteroids.forEach((element) {
         element.move();
         double Y = element.y;
         if (Y >= screen.maxHeight) {
@@ -140,11 +172,36 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       }
 
       if (player != null) {
-        bool asterCollide = asterColl.collisionCheck(player!) != -1;
-        if (asterCollide) {
-          player!.onCollide();
+        int asterCollide = asterColl.collisionCheck(player!);
+        if (asterCollide != -1) {
+          asteroids.removeAt(asterCollide);
+          asterColl.l.removeAt(asterCollide);
+          player!.onCollide(collideType.ASTEROID);
           if (player!.lives <= 0) game.evaluate(true);
         }
+        int powCollide = powColl.collisionCheck(player!);
+        if (powCollide != -1) {
+          powerUp = null;
+          powColl.l.removeAt(powCollide);
+          player!.onCollide(collideType.POWER_UP_AMMO);
+        }
+      }
+
+      if (munitions.isNotEmpty) {
+        List<int> remIdxMun = [];
+        munitions.forEach((element) {
+          int asterCollide = asterColl.collisionCheck(element!);
+          if (asterCollide != -1) {
+            asteroids.removeAt(asterCollide);
+            asterColl.l.removeAt(asterCollide);
+            remIdxMun.add(munitions.indexOf(element));
+          }
+        });
+        remIdxMun.forEach((element) {
+          print(
+              'Object:${munitions[element].hashCode} Removed! Because object has collided.');
+          munitions.removeAt(element);
+        });
       }
     });
   }
@@ -180,17 +237,16 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
                 ),
                 player != null ? GOW(sprite: player!) : Container(),
                 powerUp != null ? GOW(sprite: powerUp!) : Container(),
+                ...(munitions.map((e) => GOW(sprite: e))),
                 ...(asteroids.map((e) => GOW(sprite: e))),
-                // SizedBox.expand(
-                //   child: Visibility(
-                //     visible: _duringCelebration,
-                //     child: IgnorePointer(
-                //       child: Confetti(
-                //         isStopped: !_duringCelebration,
-                //       ),
-                //     ),
-                //   ),
-                // ),
+                OverlayPanel(
+                  lives: player!.lives,
+                  time: DateTime.now().difference(_startOfPlay),
+                  onPause: (bool status) {
+                    paused = status;
+                    print(status);
+                  },
+                ),
               ],
             ),
           ),
