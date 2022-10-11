@@ -12,5 +12,10 @@ class Sprite extends HitBox {
 }
 
 abstract class Collidable {
-  void onCollide() {}
+  void onCollide(collideType source) {}
+}
+
+enum collideType {
+  ASTEROID,
+  POWER_UP_AMMO,
 }

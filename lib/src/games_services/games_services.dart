@@ -103,17 +103,17 @@ class GamesServicesController {
 
     _log.info('Submitting $score to leaderboard.');
 
-    try {
-      await gs.GamesServices.submitScore(
-        score: gs.Score(
-          // TODO: When ready, change these leaderboard IDs.
-          iOSLeaderboardID: 'some_id_from_app_store',
-          androidLeaderboardID: 'sOmE_iD_fRoM_gPlAy',
-          value: score.score,
-        ),
-      );
-    } catch (e) {
-      _log.severe('Cannot submit leaderboard score: $e');
-    }
+    // try {
+    //   await gs.GamesServices.submitScore(
+    //     score: gs.Score(
+    //       // TODO: When ready, change these leaderboard IDs.
+    //       iOSLeaderboardID: 'some_id_from_app_store',
+    //       androidLeaderboardID: 'sOmE_iD_fRoM_gPlAy',
+    //       value: score.score,
+    //     ),
+    //   );
+    // } catch (e) {
+    //   _log.severe('Cannot submit leaderboard score: $e');
+    // }
   }
 }
