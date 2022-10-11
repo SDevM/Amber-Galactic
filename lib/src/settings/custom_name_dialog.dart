@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:game_template/src/style/background.dart';
 import 'package:provider/provider.dart';
 import 'settings.dart';
 
@@ -29,45 +30,73 @@ class _CustomNameDialogState extends State<CustomNameDialog> {
   @override
   Widget build(BuildContext context) {
     return ScaleTransition(
-
-      scale: CurvedAnimation(
-
-        parent: widget.animation,
-        curve: Curves.easeOutCubic,
-      ),
-      child: SimpleDialog(
-        backgroundColor: Color(0xFF630563),
-
-        title: const Text('Change name',style: TextStyle(color: Colors.white70)),
-        children: [
-      TextField(
-        style: TextStyle(color: Colors.white70),
-            controller: _controller,
-            autofocus: true,
-            maxLength: 12,
-            maxLengthEnforcement: MaxLengthEnforcement.enforced,
-            textAlign: TextAlign.center,
-            textCapitalization: TextCapitalization.words,
-            textInputAction: TextInputAction.done,
-            onChanged: (value) {
-              context.read<SettingsController>().setPlayerName(value);
-            },
-
-
-            onSubmitted: (value) {
-              // Player tapped 'Submit'/'Done' on their keyboard.
-              Navigator.pop(context);
-            },
-          ),
-          ElevatedButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Color(0xFF060634))),
-
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close',style: TextStyle(color: Colors.white70)),
-          ),
-        ],
-      ),
-    );
+        scale: CurvedAnimation(
+          parent: widget.animation,
+          curve: Curves.easeOutCubic,
+        ),
+        child: SimpleDialog(
+          insetPadding: EdgeInsets.all(10),
+          children: [
+            Container(
+              height: 250,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      image: AssetImage('assets/images/overlay_panel.png'),
+                      fit: BoxFit.cover)),
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    'Change Name',
+                    style: TextStyle(
+                        color: Colors.white70,
+                        fontFamily: 'FastHand',
+                        fontSize: 20),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                    width: 200,
+                    child: TextField(
+                      style: TextStyle(color: Colors.white70),
+                      controller: _controller,
+                      autofocus: true,
+                      maxLength: 12,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      textAlign: TextAlign.center,
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.done,
+                      onChanged: (value) {
+                        context.read<SettingsController>().setPlayerName(value);
+                      },
+                      onSubmitted: (value) {
+                        // Player tapped 'Submit'/'Done' on their keyboard.
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 47,
+                  ),
+                  TextButton(
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.transparent)),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close',
+                        style: TextStyle(
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
   @override
