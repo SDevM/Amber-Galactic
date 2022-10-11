@@ -30,45 +30,19 @@ class LoseGameScreen extends StatelessWidget {
 
     const gap = SizedBox(height: 10);
 
-    return Scaffold(
-      backgroundColor: palette.backgroundPlaySession,
-      body: ResponsiveScreen(
-        squarishMainArea: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            if (adsControllerAvailable && !adsRemoved) ...[
-              const Expanded(
-                child: Center(
-                  child: BannerAdWidget(),
-                ),
-              ),
-            ],
-            gap,
-            const Center(
-              child: Text(
-                'Ship Destroyed!',
-                style: TextStyle(fontFamily: 'Permanent Marker', fontSize: 50),
-              ),
-            ),
-            gap,
-            Center(
-              child: Text(
-                'Score: ${score.score}\n'
-                'Time: ${score.formattedTime}',
-                style: const TextStyle(
-                  fontFamily: 'Permanent Marker',
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-        rectangularMenuArea: ElevatedButton(
-          onPressed: () {
-            GoRouter.of(context).go('/');
-          },
-          child: Scaffold(
+    return Listener(
+      onPointerUp: (e) => GoRouter.of(context).go("/"),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            "assets/images/universe_background.jpg",
+            fit: BoxFit.cover,
+          ),
+          Container(
+            color: Color.fromARGB(130, 0, 0, 0),
+          ),
+          Scaffold(
             backgroundColor: Colors.transparent,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -93,13 +67,54 @@ class LoseGameScreen extends StatelessWidget {
                 ),
                 gap,
                 Center(
-                  child: Text(
-                    'Score: ${score.score}\n'
-                    'Time: ${score.formattedTime}',
-                    style: const TextStyle(
-                      fontFamily: 'Permanent Marker',
-                      color: Colors.white,
-                      fontSize: 20,
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.65,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Score',
+                              style: const TextStyle(
+                                fontFamily: 'Permanent Marker',
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Text(
+                              '${score.score}',
+                              style: const TextStyle(
+                                fontFamily: 'Permanent Marker',
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        gap,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Time',
+                              style: const TextStyle(
+                                fontFamily: 'Permanent Marker',
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Text(
+                              '${score.formattedTime}',
+                              style: const TextStyle(
+                                fontFamily: 'Permanent Marker',
+                                color: Colors.white,
+                                fontSize: 20,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -111,7 +126,7 @@ class LoseGameScreen extends StatelessWidget {
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

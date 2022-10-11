@@ -159,14 +159,13 @@ class MyApp extends StatelessWidget {
               GoRoute(
                 path: 'lost',
                 pageBuilder: (context, state) {
-                  // Map<String, dynamic> map =
-                  //     state.extra as Map<String, dynamic>;
-                  // final score = map['score'];
+                  Map<String, dynamic> map =
+                      state.extra as Map<String, dynamic>;
+                  final score = map['score'];
 
                   return buildMyTransition<void>(
                     child: LoseGameScreen(
-                      // score: score ?? Score(Duration(milliseconds: 0)),
-                      score: Score(Duration(milliseconds: 0)),
+                      score: score,
                       key: const Key('lose game'),
                     ),
                     color: context.watch<Palette>().backgroundPlaySession,
