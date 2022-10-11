@@ -3,11 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
+import 'package:go_router/go_router.dart';
 
-/// An extremely silly example of a game state.
-///
-/// Tracks only a single variable, [progress], and calls [onLose] when
-/// the value of [progress] reaches [goal].
 class LevelState extends ChangeNotifier {
   final VoidCallback onLose;
 
@@ -25,7 +22,7 @@ class LevelState extends ChangeNotifier {
 
   void evaluate(bool lost) {
     if (lost) {
-      onLose();
+      return onLose();
     }
   }
 }
