@@ -48,6 +48,7 @@ flutter:
       - assets/sprite_images/beams/
       - assets/sprite_images/explosions/
       - assets/sprite_images/explosions/2d-special-effects/
+      - assets/sprite_images/explosions/2d-special-effects/light_glow_effect/
       - assets/sprite_images/spaceships/
       - assets/music/
       - assets/music/background_music/

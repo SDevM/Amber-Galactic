@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -14,24 +12,17 @@ import 'package:game_template/src/game_objects/Asteroid.dart';
 import 'package:game_template/src/game_objects/GameObjectWidget.dart';
 import 'package:game_template/src/game_objects/Player.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
+import 'package:game_template/src/game_objects/Shield.dart';
 import 'package:game_template/src/game_objects/Sprite.dart';
 import 'package:game_template/src/play_session/overlay.dart';
 import 'package:game_template/src/style/background.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logging/logging.dart' hide Level;
 import 'package:provider/provider.dart';
 
 import '../ads/ads_controller.dart';
-import '../audio/audio_controller.dart';
-import '../audio/sounds.dart';
 import '../game_internals/level_state.dart';
-import '../games_services/games_services.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/in_app_purchase.dart';
-import '../level_selection/levels.dart';
-import '../player_progress/player_progress.dart';
-import '../style/confetti.dart';
-import '../style/palette.dart';
 
 class PlaySessionScreen extends StatefulWidget {
   const PlaySessionScreen({super.key});
@@ -42,12 +33,6 @@ class PlaySessionScreen extends StatefulWidget {
 
 class _PlaySessionScreenState extends State<PlaySessionScreen>
     with SingleTickerProviderStateMixin<PlaySessionScreen> {
-  static final _log = Logger('PlaySessionScreen');
-
-  static const _celebrationDuration = Duration(milliseconds: 2000);
-
-  static const _preCelebrationDuration = Duration(milliseconds: 500);
-
   bool _duringCelebration = false;
 
   late DateTime _startOfPlay;
@@ -55,6 +40,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   late LevelState game = LevelState(onLose: _playerLost);
   Player? player;
   PowerUp? powerUp;
+  Shield? shield;
   Collider<PowerUp> powColl = Collider();
   List<Asteroid> asteroids = <Asteroid>[];
   Collider<Asteroid> asterColl = Collider();
@@ -70,6 +56,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   int changesCounter = 0;
   int lastCounter = 0;
   int nextAst = rand.nextInt(10) + 50;
+  bool tickToggle1 = true;
 
   void changes(Duration duration) {
     if (paused) return;
@@ -97,36 +84,51 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
             break;
         }
       }
-      // if (timer.tick % 3600 == 0) {
-      //   powerUpKeys.add(GlobalKey<PowerUpState>());
-      //   powerUp.clear();
-      //   powerUp.add(PowerUp(
-      //       initX: screen.maxWidth / 2,
-      //       initY: screen.maxHeight / 2,
-      //       width: 30,
-      //       height: 30,
-      //       powerUp: power.AMMO,
-      //       id: idCounter++));
-      // }
+      if (changesCounter % 800 == 0) {
+        print('New PowerUp');
+        double randX = (rand.nextDouble() * screen.maxWidth);
+        powerUp = PowerUp(
+          randX > (screen.maxWidth - 42) ? screen.maxWidth - 45 : randX,
+          screen.maxHeight / 3,
+          42,
+          45,
+          power.values[rand.nextInt(power.values.length)],
+        );
+        powColl.l.add(powerUp!);
+      }
       if (changesCounter >= lastCounter + nextAst) {
-        nextAst = rand.nextInt(25) + 30;
+        nextAst = rand.nextInt(20) + 50;
         lastCounter = changesCounter;
         print('New Asteroid');
         double randX = (rand.nextDouble() * screen.maxWidth);
         double size = (rand.nextDouble() * 2) + 1;
         asteroids.add(
           Asteroid(
-            randX > (screen.maxWidth - 50 * size)
-                ? screen.maxWidth - 50 * size
+            randX > (screen.maxWidth - (108 / 2) * size)
+                ? screen.maxWidth - (108 / 2) * size
                 : randX,
             -150,
-            50,
-            45,
+            108 / 2,
+            99 / 2,
             size,
           ),
         );
         asterColl.l.add(asteroids.last);
       }
+      if (player != null && shield == null && player!.powerUps[power.SHIELD]!) {
+        print('New Shield');
+        shield = Shield(
+          player!.x - 10,
+          player!.y - 10,
+          player!.width + 20,
+          player!.height + 20,
+        );
+      }
+      if ( player != null && !player!.powerUps[power.SHIELD]!) {
+        shield = null;
+        player!.powerClear(power.SHIELD);
+      }
+
       player?.move(screen);
       if (changesCounter % 30 == 0 &&
           player != null &&
@@ -167,34 +169,69 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         asterColl.l.removeAt(element);
       });
 
+      if (changesCounter % 20 == 0) {
+        tickToggle1 = !tickToggle1;
+      }
+      powerUp?.move(tickToggle1);
+
       if (powerUp != null && powerUp!.y >= screen.maxHeight) {
         powerUp = null;
       }
 
+      if (shield != null) {
+        int asterCollide = asterColl.collisionCheck(shield!);
+        if (asterCollide != -1) {
+          asteroids.removeAt(asterCollide);
+          asterColl.l.removeAt(asterCollide);
+          shield!.onCollide(collideType.ASTEROID);
+          if (shield!.lives <= 0) {
+            shield = null;
+            player!.powerClear(power.SHIELD);
+          }
+        }
+      }
+
       if (player != null) {
+        if (shield != null) {
+          shield!.x = player!.x - 10;
+          shield!.y = player!.y - 10;
+          shield!.width = player!.width + 20;
+          shield!.height = player!.height + 20;
+        }
         int asterCollide = asterColl.collisionCheck(player!);
         if (asterCollide != -1) {
           asteroids.removeAt(asterCollide);
           asterColl.l.removeAt(asterCollide);
           player!.onCollide(collideType.ASTEROID);
-          if (player!.lives <= 0) game.evaluate(true);
+          if (player!.lives <= 0) {
+            paused = true;
+            game.evaluate(true);
+          }
         }
         int powCollide = powColl.collisionCheck(player!);
         if (powCollide != -1) {
-          powerUp = null;
+          switch (powerUp!.powerUp) {
+            case (power.AMMO):
+              player!.onCollide(collideType.POWER_UP_AMMO);
+              break;
+            case (power.SHIELD):
+              player!.onCollide(collideType.POWER_UP_SHIELD);
+              break;
+          }
           powColl.l.removeAt(powCollide);
-          player!.onCollide(collideType.POWER_UP_AMMO);
+          powerUp = null;
         }
       }
 
       if (munitions.isNotEmpty) {
         List<int> remIdxMun = [];
         munitions.forEach((element) {
-          int asterCollide = asterColl.collisionCheck(element!);
+          int asterCollide = asterColl.collisionCheck(element);
           if (asterCollide != -1) {
             asteroids.removeAt(asterCollide);
             asterColl.l.removeAt(asterCollide);
-            remIdxMun.add(munitions.indexOf(element));
+            int idx = munitions.indexOf(element);
+            remIdxMun.add(idx);
           }
         });
         remIdxMun.forEach((element) {
@@ -208,8 +245,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.watch<Palette>();
-
     return IgnorePointer(
       ignoring: _duringCelebration,
       child: LayoutBuilder(builder: (layoutContext, constraints) {
@@ -217,7 +252,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         return GestureDetector(
           // Player Controls
           onHorizontalDragEnd: (DragEndDetails details) {
-            // TODO Make the player x axis movement negative or positive based on the side of the screen
             if (details.velocity.pixelsPerSecond.dx >= (screen.maxWidth / 2)) {
               inputPublisher.add(inputType.TOUCH_RIGHT);
             } else {
@@ -225,7 +259,6 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
             }
           },
           onDoubleTap: () {
-            // TODO Teleport!
             inputPublisher.add(inputType.DOUBLE_TOUCH);
           },
           child: Scaffold(
@@ -239,14 +272,17 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
                 powerUp != null ? GOW(sprite: powerUp!) : Container(),
                 ...(munitions.map((e) => GOW(sprite: e))),
                 ...(asteroids.map((e) => GOW(sprite: e))),
-                OverlayPanel(
-                  lives: player!.lives,
-                  time: DateTime.now().difference(_startOfPlay),
-                  onPause: (bool status) {
-                    paused = status;
-                    print(status);
-                  },
-                ),
+                shield != null ? GOW(sprite: shield!) : Container(),
+                player != null
+                    ? OverlayPanel(
+                        lives: player!.lives,
+                        time: DateTime.now().difference(_startOfPlay),
+                        onPause: (bool status) {
+                          paused = status;
+                          print(status);
+                        },
+                      )
+                    : Container(),
               ],
             ),
           ),

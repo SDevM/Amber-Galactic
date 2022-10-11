@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 import 'package:game_template/src/games_services/score.dart';
 
@@ -61,10 +60,12 @@ class _OverlayPanelState extends State<OverlayPanel> {
               TextButton(
                   onPressed: () {
                     widget.onPause(toggle);
-                    toggle =! toggle;
+                    setState(() {
+                      toggle =! toggle;
+                    });
                   },
                   child: Icon(
-                    Icons.pause,
+                    toggle ? Icons.pause : Icons.play_arrow,
                     color: Colors.white,
                     size: 40,
                   )),

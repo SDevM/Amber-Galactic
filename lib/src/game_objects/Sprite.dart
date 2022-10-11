@@ -18,4 +18,5 @@ abstract class Collidable {
 enum collideType {
   ASTEROID,
   POWER_UP_AMMO,
+  POWER_UP_SHIELD,
 }

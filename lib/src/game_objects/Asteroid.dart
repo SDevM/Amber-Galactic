@@ -4,7 +4,7 @@ import 'Sprite.dart';
 
 class Asteroid extends Sprite implements Collidable {
   final double size;
-  final double speed = 3;
+  final double speed = 2;
 
   Asteroid(double x, double y, double width, double height, this.size)
       : super(
