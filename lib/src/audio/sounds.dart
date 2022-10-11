@@ -4,6 +4,16 @@
 
 List<String> soundTypeToFilename(SfxType type) {
   switch (type) {
+    case SfxType.laser:
+      return const [
+        'laser1.ogg',
+        'laser2.ogg',
+        'laser3.ogg',
+      ];
+    case SfxType.warp:
+      return const [
+        'warpout.ogg',
+      ];
     case SfxType.huhsh:
       return const [
         'hash1.mp3',
@@ -53,6 +63,8 @@ double soundTypeToVolume(SfxType type) {
       return 0.4;
     case SfxType.wssh:
       return 0.2;
+    case SfxType.warp:
+    case SfxType.laser:
     case SfxType.buttonTap:
     case SfxType.congrats:
     case SfxType.erase:
@@ -62,6 +74,8 @@ double soundTypeToVolume(SfxType type) {
 }
 
 enum SfxType {
+  warp,
+  laser,
   huhsh,
   wssh,
   buttonTap,
