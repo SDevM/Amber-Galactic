@@ -3,11 +3,13 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:game_template/src/audio/audio_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../ads/ads_controller.dart';
 import '../ads/banner_ad_widget.dart';
+import '../audio/sounds.dart';
 import '../games_services/score.dart';
 import '../in_app_purchase/in_app_purchase.dart';
 import '../style/palette.dart';
@@ -30,6 +32,10 @@ class LoseGameScreen extends StatelessWidget {
 
     const gap = SizedBox(height: 10);
 
+    // TODO Implement better lose sound implementation
+    final audioController = AudioController();
+
+    audioController.playSfx(SfxType.gameOver);
     return Listener(
       onPointerUp: (e) => GoRouter.of(context).go("/"),
       child: Stack(
