@@ -159,7 +159,6 @@ class _GameLogoState extends State<GameLogo>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation _animation;
-  late Animation _animation2;
 
   @override
   void initState() {
@@ -171,13 +170,6 @@ class _GameLogoState extends State<GameLogo>
     );
 
     _animation = Tween(begin: 1, end: 0.8).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.ease,
-      ),
-    );
-
-    _animation2 = Tween(begin: 0.1, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
         curve: Curves.ease,
@@ -197,21 +189,22 @@ class _GameLogoState extends State<GameLogo>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _animation,
-        builder: (context, snapshot) {
-          return Transform.scale(
-            scale: _animation.value,
-            child: Text(
-              'Amber\nGalactic',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'FastHand',
-                fontSize: 55,
-                height: 1,
-                color: Colors.white,
-              ),
+      animation: _animation,
+      builder: (context, snapshot) {
+        return Transform.scale(
+          scale: _animation.value,
+          child: Text(
+            'Amber\nGalactic',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'FastHand',
+              fontSize: 55,
+              height: 1,
+              color: Colors.white,
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

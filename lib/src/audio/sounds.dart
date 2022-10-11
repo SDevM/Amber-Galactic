@@ -6,13 +6,13 @@ List<String> soundTypeToFilename(SfxType type) {
   switch (type) {
     case SfxType.laser:
       return const [
-        'laser1.ogg',
-        'laser2.ogg',
-        'laser3.ogg',
+        'space_sfx1/laser1.ogg',
+        'space_sfx1/laser2.ogg',
+        'space_sfx1/laser3.ogg',
       ];
     case SfxType.warp:
       return const [
-        'warpout.ogg',
+        'space_sfx1/warpout.ogg',
       ];
     case SfxType.huhsh:
       return const [
