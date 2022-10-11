@@ -16,7 +16,7 @@ class Score {
     // The higher the difficulty, the higher the score.
     var score = 0;
     // The longer the player survives, the higher the score.
-    score += 100 * (duration.inSeconds.abs() + 1);
+    score += (0.1 * (duration.inMilliseconds / 10 + 1)).abs().toInt();
     return Score._(score, duration);
   }
 
@@ -37,6 +37,10 @@ class Score {
     }
     buf.write(':');
     buf.write((duration.inSeconds % Duration.secondsPerMinute)
+        .toString()
+        .padLeft(2, '0'));
+    buf.write(':');
+    buf.write((duration.inMilliseconds % Duration.millisecondsPerSecond)
         .toString()
         .padLeft(2, '0'));
     return buf.toString();

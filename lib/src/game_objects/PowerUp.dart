@@ -13,7 +13,7 @@ class PowerUp extends Sprite implements Collidable {
   }
 
   @override
-  void onCollide() {
+  void onCollide(collideType source) {
     // TODO: implement onCollide
   }
 }

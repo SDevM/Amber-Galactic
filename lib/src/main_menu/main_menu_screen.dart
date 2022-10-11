@@ -195,7 +195,7 @@ class _GameLogoState extends State<GameLogo>
           return Transform.rotate(
             angle: _animation2.value,
             child: Transform.scale(
-              scale: _animation.value,
+              scale: _animation.value as double,
               child: Text(
                 'Amber\nGalactic',
                 textAlign: TextAlign.center,

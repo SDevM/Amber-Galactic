@@ -68,7 +68,7 @@ class LoseGameScreen extends StatelessWidget {
           onPressed: () {
             GoRouter.of(context).go('/');
           },
-          child: const Text('Continue'),
+          child: const Text('Main Menu'),
         ),
       ),
     );

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:game_template/src/games_services/score.dart';
+
 class OverlayPanel extends StatefulWidget {
-  const OverlayPanel({super.key});
+  final Duration time;
+  final int lives;
+  final Function onPause;
+
+  const OverlayPanel({super.key, required this.time, required this.lives, required this.onPause});
 
   @override
   State<OverlayPanel> createState() => _OverlayPanelState();
 }
 
 class _OverlayPanelState extends State<OverlayPanel> {
-  int score = 0000;
+  bool toggle = true;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -39,7 +45,7 @@ class _OverlayPanelState extends State<OverlayPanel> {
                         width: 3,
                       ),
                       Text(
-                        '000$score',
+                        '${Score(widget.time).score}',
                         style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -49,9 +55,14 @@ class _OverlayPanelState extends State<OverlayPanel> {
                   ),
                 ),
               ),
-              GameTime(),
+              GameTime(
+                dur: widget.time,
+              ),
               TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    widget.onPause(toggle);
+                    toggle =! toggle;
+                  },
                   child: Icon(
                     Icons.pause,
                     color: Colors.white,
@@ -59,34 +70,19 @@ class _OverlayPanelState extends State<OverlayPanel> {
                   )),
             ],
           ),
-          LifeBar()
+          LifeBar(
+            lives: widget.lives,
+          ),
         ],
       ),
     );
   }
 }
 
-class GameTime extends StatefulWidget {
-  const GameTime({Key? key}) : super(key: key);
-  @override
-  State<GameTime> createState() => _GameTimeState();
-}
+class GameTime extends StatelessWidget {
+  final Duration dur;
 
-class _GameTimeState extends State<GameTime> {
-  var timer = Timer.run(() => print('done'));
-
-
-  var gameTime = "";
-  var _timer = null;
-  @override
-  void initState(){
-    super.initState();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        gameTime = "${DateTime.now().minute}:${DateTime.now().second}";
-      });
-    });
-  }
+  const GameTime({Key? key, required this.dur}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -100,47 +96,60 @@ class _GameTimeState extends State<GameTime> {
           width: 5,
         ),
         Text(
-          '$gameTime',
+          '$formattedTime',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ],
     );
   }
+
+  String get formattedTime {
+    final buf = StringBuffer();
+    if (dur.inHours > 0) {
+      buf.write('${dur.inHours}');
+      buf.write(':');
+    }
+    final minutes = dur.inMinutes % Duration.minutesPerHour;
+    if (minutes > 9) {
+      buf.write('$minutes');
+    } else {
+      buf.write('0');
+      buf.write('$minutes');
+    }
+    buf.write(':');
+    buf.write(
+        (dur.inSeconds % Duration.secondsPerMinute).toString().padLeft(2, '0'));
+    buf.write(':');
+    buf.write((dur.inMilliseconds % Duration.millisecondsPerSecond)
+        .toString()
+        .padLeft(2, '0'));
+    return buf.toString();
+  }
 }
 
-class LifeBar extends StatefulWidget {
-  const LifeBar({Key? key}) : super(key: key);
+class LifeBar extends StatelessWidget {
+  final int lives;
 
-  @override
-  State<LifeBar> createState() => _LifeBarState();
-}
+  const LifeBar({Key? key, required this.lives}) : super(key: key);
 
-class _LifeBarState extends State<LifeBar> {
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(
-          Icons.rocket_launch,
-          color: Colors.amberAccent,
-        ),
-        Icon(
-          Icons.rocket_launch,
-          color: Colors.amberAccent,
-        ),
-        Icon(
-          Icons.rocket_launch,
-          color: Colors.grey,
-        ),
-        Icon(
-          Icons.close,
-          color: Colors.white,
-        ),
+        ...List<int>.generate(lives, (i) => i + 1).map((e) => Icon(
+              Icons.rocket_launch,
+              color: Colors.amberAccent,
+            )),
+        ...List<int>.generate(3 - lives, (i) => i + 1).map((e) => Icon(
+              Icons.rocket_launch,
+              color: Colors.amberAccent.withOpacity(0.3),
+            )),
+        Icon(Icons.close, color: Colors.white, size: 20,),
         Text(
-          '2',
+          '$lives',
           style: TextStyle(
-              color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
         )
       ],
     );
