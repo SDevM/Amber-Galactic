@@ -30,7 +30,7 @@ class LoseGameScreen extends StatelessWidget {
         context.watch<InAppPurchaseController?>()?.adRemoval.active ?? false;
     final palette = context.watch<Palette>();
 
-    const gap = SizedBox(height: 10);
+    const _gap = SizedBox(height: 10);
 
     // TODO Implement better lose sound implementation
     final audioController = AudioController();
@@ -60,21 +60,23 @@ class LoseGameScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-                gap,
+                _gap,
                 const Center(
                   child: Text(
                     'Ship Destroyed!',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: 'FastHand',
-                      fontSize: 40,
+                      fontSize: 35,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                gap,
+                _gap,
+                _gap,
                 Center(
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.65,
+                    width: MediaQuery.of(context).size.width * 0.5,
                     child: Column(
                       children: [
                         Row(
@@ -98,7 +100,7 @@ class LoseGameScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        gap,
+                        _gap,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -124,8 +126,8 @@ class LoseGameScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                gap,
-                gap,
+                _gap,
+                _gap,
                 Center(
                   child: TapToContinue(),
                 ),
