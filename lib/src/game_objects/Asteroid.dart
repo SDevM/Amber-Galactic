@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/audio/sounds.dart';
 
+import '../audio/audio_controller.dart';
 import 'Sprite.dart';
 
 class Asteroid extends Sprite implements Collidable {
   final double size;
   final double speed = 2;
+
+  final _audioController = AudioController();
 
   Asteroid(double x, double y, double width, double height, this.size)
       : super(
@@ -23,6 +27,7 @@ class Asteroid extends Sprite implements Collidable {
   @override
   void onCollide(collideType source) {
     // TODO: implement onCollide
+    _audioController.playSfx(SfxType.asteroidExplosion);
   }
 }
 

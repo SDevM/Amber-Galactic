@@ -4,15 +4,25 @@
 
 List<String> soundTypeToFilename(SfxType type) {
   switch (type) {
-    case SfxType.gameOver:
+    case SfxType.asteroidExplosion:
       return const [
-        'space_sfx1/game-over.ogg',
+        'asteroid_explosion.ogg',
+        'asteroid_explosion1.ogg',
+        'asteroid_explosion2.ogg',
+        'asteroid_explosion3.ogg',
       ];
+    case SfxType.shipExplosion:
+      return const ['ship_explosion.ogg'];
     case SfxType.laser:
       return const [
         'space_sfx1/laser1.ogg',
         'space_sfx1/laser2.ogg',
         'space_sfx1/laser3.ogg',
+      ];
+
+    case SfxType.gameOver:
+      return const [
+        'space_sfx1/game-over.ogg',
       ];
     case SfxType.warp:
       return const [
@@ -75,11 +85,15 @@ double soundTypeToVolume(SfxType type) {
     case SfxType.congrats:
     case SfxType.erase:
     case SfxType.swishSwish:
+    case SfxType.shipExplosion:
+    case SfxType.asteroidExplosion:
       return 1.0;
   }
 }
 
 enum SfxType {
+  shipExplosion,
+  asteroidExplosion,
   warp,
   gameOver,
   laser,
