@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:game_template/src/audio/sounds.dart';
 import 'package:game_template/src/game_objects/PowerUp.dart';
 
+import '../audio/audio_controller.dart';
 import 'Sprite.dart';
 
 class Player extends Sprite implements Collidable {
@@ -11,6 +13,7 @@ class Player extends Sprite implements Collidable {
   };
   int xOff = 0;
   bool immune = false;
+  final _audioController = AudioController();
 
   Player(double x, double y, double width, double height)
       : super(
@@ -39,6 +42,8 @@ class Player extends Sprite implements Collidable {
     switch (source) {
       case (collideType.ASTEROID):
         if (!immune) {
+          _audioController.playSfx(SfxType.shipExplosion);
+
           lives--;
           immune = true;
           Future.delayed(Duration(seconds: 2), () {
