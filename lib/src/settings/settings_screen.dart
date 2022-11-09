@@ -5,10 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
-import '../in_app_purchase/in_app_purchase.dart';
 import '../player_progress/player_progress.dart';
-import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 import 'custom_name_dialog.dart';
 import 'settings.dart';
@@ -22,7 +19,6 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<SettingsController>();
-    final palette = context.watch<Palette>();
 
     return Scaffold(
       body: Stack(children: [
@@ -78,21 +74,6 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ),
                 _smallGap,
-                _smallGap,
-                ValueListenableBuilder<int>(
-                  valueListenable: settings.highScore,
-                  builder: (context, highScore, child) => _SettingsLine(
-                    'Top Score',
-                    Text(
-                      '${highScore}',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                      ),
-                    ),
-                    onSelected: () => settings.toggleMusicOn(),
-                  ),
-                ),
                 _smallGap,
                 _SettingsLine(
                   'Reset progress',

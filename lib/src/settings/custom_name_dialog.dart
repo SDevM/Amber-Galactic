@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:game_template/src/style/background.dart';
 import 'package:provider/provider.dart';
 import 'settings.dart';
 
@@ -38,7 +37,7 @@ class _CustomNameDialogState extends State<CustomNameDialog> {
           insetPadding: EdgeInsets.all(10),
           children: [
             Container(
-              height: 250,
+              height: 300,
               width: double.maxFinite,
               decoration: BoxDecoration(
                   image: DecorationImage(

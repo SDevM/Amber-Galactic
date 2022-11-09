@@ -4,6 +4,7 @@ import 'Sprite.dart';
 
 class GOW extends StatelessWidget {
   final Sprite sprite;
+
   const GOW({Key? key, required this.sprite}) : super(key: key);
 
   @override
@@ -13,7 +14,12 @@ class GOW extends StatelessWidget {
       left: sprite.x,
       width: sprite.width,
       height: sprite.height,
-      child: Center(child: Image(image: sprite.image.image)),
+      child: Center(
+          child: Image(
+        image: sprite.image.image,
+        width: double.infinity,
+        height: double.infinity,
+      )),
     );
   }
 }

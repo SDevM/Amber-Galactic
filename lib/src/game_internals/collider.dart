@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:game_template/src/game_objects/HitBox.dart';
 
 class Collider<T extends HitBox> {
@@ -18,11 +16,29 @@ class Collider<T extends HitBox> {
     return idx;
   }
 
+  int collisionDeep(box) {
+    int idx = -1;
+    for (T listBox in l) {
+      if (_collisionCompareDeep(listBox, box)) {
+        idx = l.indexOf(listBox);
+        break;
+      }
+    }
+    return idx;
+  }
+
   bool _collisionCompare(HitBox box1, HitBox box2) {
     return box1.x < box2.x + box2.width &&
         box1.x + box1.width > box2.x &&
         box1.y < box2.y + box2.height &&
         box1.height + box1.y > box2.y;
+  }
+
+  bool _collisionCompareDeep(HitBox box1, HitBox box2) {
+    return box1.x + box1.width * 0.1 < box2.x + box2.width &&
+        box1.x + box1.width * 0.8 > box2.x &&
+        box1.y + box1.height * 0.1 < box2.y + box2.height &&
+        box1.height * 0.8 + box1.y > box2.y;
   }
 }
 

@@ -14,6 +14,8 @@ class Shield extends Sprite implements Collidable {
           height,
           Image.asset(
             'assets/sprite_images/explosions/2d-special-effects/light_glow_effect/light_glow_07.png',
+            width: double.infinity,
+            height: double.infinity,
           ),
         );
 

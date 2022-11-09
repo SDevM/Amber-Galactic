@@ -14,7 +14,11 @@ class Ammo1 extends Sprite implements Collidable {
           y,
           width,
           height,
-          Image.asset('assets/sprite_images/beams/cyan_beam.png'),
+          Image.asset(
+            'assets/sprite_images/beams/cyan_beam.png',
+            width: double.infinity,
+            height: double.infinity,
+          ),
         ) {
     audioController.playSfx(SfxType.laser);
   }

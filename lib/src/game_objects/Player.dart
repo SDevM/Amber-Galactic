@@ -24,6 +24,10 @@ class Player extends Sprite implements Collidable {
           Image.asset('assets/sprite_images/spaceships/ranger1.png'),
         );
 
+  tickTime() {
+
+  }
+
   void move(BoxConstraints bounds) {
     if (this.x + xOff >= 0 && this.x + xOff <= bounds.maxWidth - this.width)
       this.x += xOff;
@@ -56,17 +60,18 @@ class Player extends Sprite implements Collidable {
           element = false;
         });
         powerUps[power.AMMO] = true;
-        Future.delayed(Duration(seconds: 15), () {
+        Future.delayed(Duration(seconds: 20), () {
           powerUps[power.AMMO] = false;
         });
         break;
       case (collideType.POWER_UP_SHIELD):
-        lives = 3;
+        lives++;
+        if (lives > 3) lives = 3;
         powerUps.values.forEach((element) {
           element = false;
         });
         powerUps[power.SHIELD] = true;
-        Future.delayed(Duration(seconds: 15), () {
+        Future.delayed(Duration(seconds: 20), () {
           powerUps[power.SHIELD] = false;
         });
         break;

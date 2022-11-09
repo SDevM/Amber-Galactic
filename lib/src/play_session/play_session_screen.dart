@@ -53,10 +53,11 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
 
   bool firstRun = true;
 
-  int changesCounter = 0;
+  int changesCounter = 500;
   int lastCounter = 0;
   int nextAst = rand.nextInt(10) + 50;
   bool tickToggle1 = true;
+  bool powerProcess = false;
 
   void changes(Duration duration) {
     if (paused) return;
@@ -84,20 +85,24 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
             break;
         }
       }
-      if (changesCounter % 800 == 0) {
-        print('New PowerUp');
-        double randX = (rand.nextDouble() * screen.maxWidth);
-        powerUp = PowerUp(
-          randX > (screen.maxWidth - 42) ? screen.maxWidth - 45 : randX,
-          screen.maxHeight / 3,
-          42,
-          45,
-          power.values[rand.nextInt(power.values.length)],
-        );
-        powColl.l.add(powerUp!);
+      if (!powerProcess) {
+        powerProcess = true;
+        Future.delayed(Duration(seconds: 35), () {
+          print('New PowerUp');
+          double randX = (rand.nextDouble() * screen.maxWidth);
+          powerUp = PowerUp(
+            randX > (screen.maxWidth - 42) ? screen.maxWidth - 45 : randX,
+            screen.maxHeight / 3,
+            42,
+            45,
+            power.values[rand.nextInt(power.values.length)],
+          );
+          powColl.l.add(powerUp!);
+          powerProcess = false;
+        });
       }
       if (changesCounter >= lastCounter + nextAst) {
-        nextAst = rand.nextInt(20) + 50;
+        nextAst = rand.nextInt(20) + 80;
         lastCounter = changesCounter;
         print('New Asteroid');
         double randX = (rand.nextDouble() * screen.maxWidth);
@@ -198,7 +203,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
           shield!.width = player!.width + 20;
           shield!.height = player!.height + 20;
         }
-        int asterCollide = asterColl.collisionCheck(player!);
+        int asterCollide = asterColl.collisionDeep(player!);
         if (asterCollide != -1) {
           asteroids.removeAt(asterCollide);
           asterColl.l.removeAt(asterCollide);
@@ -226,7 +231,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       if (munitions.isNotEmpty) {
         List<int> remIdxMun = [];
         munitions.forEach((element) {
-          int asterCollide = asterColl.collisionCheck(element);
+          int asterCollide = asterColl.collisionDeep(element);
           if (asterCollide != -1) {
             asteroids.removeAt(asterCollide);
             asterColl.l.removeAt(asterCollide);
