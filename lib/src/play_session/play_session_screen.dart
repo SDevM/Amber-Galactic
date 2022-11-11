@@ -178,7 +178,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         asterColl.l.removeAt(element);
       });
 
-      if (changesCounter % 20 == 0) {
+      if (changesCounter % 40 == 0) {
         tickToggle1 = !tickToggle1;
       }
       powerUp?.move(tickToggle1);

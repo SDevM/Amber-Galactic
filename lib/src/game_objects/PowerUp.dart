@@ -8,8 +8,8 @@ class PowerUp extends Sprite {
       : super(x, y, width, height, images[powerUp]!);
 
   void move(bool left) {
-    this.y += 5;
-    this.x += left ? -2 : 2;
+    this.y += 4;
+    this.x += left ? -3 : 3;
   }
 }
 
