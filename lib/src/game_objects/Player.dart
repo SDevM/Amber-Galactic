@@ -15,17 +15,18 @@ class Player extends Sprite implements Collidable {
   };
   int xOff = 0;
   bool immune = false;
-  Timer? _powerTimer;
+  Timer? _ammoTimer;
+  Timer? _shieldTimer;
   final _audioController = AudioController();
 
   Player(double x, double y, double width, double height)
       : super(
-          x,
-          y,
-          width,
-          height,
-          Image.asset('assets/sprite_images/spaceships/ranger1.png'),
-        );
+    x,
+    y,
+    width,
+    height,
+    Image.asset('assets/sprite_images/spaceships/ranger1.png'),
+  );
 
   tickTime() {}
 
@@ -60,8 +61,8 @@ class Player extends Sprite implements Collidable {
           element = false;
         });
         powerUps[power.AMMO] = true;
-        _powerTimer?.cancel();
-        _powerTimer = Timer(Duration(seconds: 25), () {
+        _ammoTimer?.cancel();
+        _ammoTimer = Timer(Duration(seconds: 25), () {
           powerUps[power.AMMO] = false;
         });
         break;
@@ -72,8 +73,8 @@ class Player extends Sprite implements Collidable {
           element = false;
         });
         powerUps[power.SHIELD] = true;
-        _powerTimer?.cancel();
-        _powerTimer = Timer(Duration(seconds: 15), () {
+        _shieldTimer?.cancel();
+        _shieldTimer = Timer(Duration(seconds: 15), () {
           powerUps[power.SHIELD] = false;
         });
         break;
