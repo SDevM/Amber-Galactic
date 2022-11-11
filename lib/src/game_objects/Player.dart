@@ -60,7 +60,7 @@ class Player extends Sprite implements Collidable {
           element = false;
         });
         powerUps[power.AMMO] = true;
-        Future.delayed(Duration(seconds: 20), () {
+        Future.delayed(Duration(seconds: 25), () {
           powerUps[power.AMMO] = false;
         });
         break;
@@ -71,7 +71,7 @@ class Player extends Sprite implements Collidable {
           element = false;
         });
         powerUps[power.SHIELD] = true;
-        Future.delayed(Duration(seconds: 20), () {
+        Future.delayed(Duration(seconds: 15), () {
           powerUps[power.SHIELD] = false;
         });
         break;

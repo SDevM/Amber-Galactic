@@ -35,7 +35,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
     with SingleTickerProviderStateMixin<PlaySessionScreen> {
   bool _duringCelebration = false;
 
-  late DateTime _startOfPlay;
+  Stopwatch _gameTime = Stopwatch();
 
   late LevelState game = LevelState(onLose: _playerLost);
   Player? player;
@@ -60,7 +60,11 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   bool powerProcess = false;
 
   void changes(Duration duration) {
-    if (paused) return;
+    if (paused) {
+      if (_gameTime.isRunning) _gameTime.stop();
+      return;
+    }
+    if (!_gameTime.isRunning) _gameTime.start();
     changesCounter++;
     setState(() {
       if (firstRun) {
@@ -76,10 +80,10 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
         inputType input = inputPublisher.removeLast();
         switch (input) {
           case (inputType.TOUCH_LEFT):
-            player?.xOff = -4;
+            player?.xOff = -3;
             break;
           case (inputType.TOUCH_RIGHT):
-            player?.xOff = 4;
+            player?.xOff = 3;
             break;
           case (inputType.DOUBLE_TOUCH):
             break;
@@ -87,7 +91,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
       }
       if (!powerProcess) {
         powerProcess = true;
-        Future.delayed(Duration(seconds: 35), () {
+        Future.delayed(Duration(seconds: 20), () {
           print('New PowerUp');
           double randX = (rand.nextDouble() * screen.maxWidth);
           powerUp = PowerUp(
@@ -281,7 +285,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
                 player != null
                     ? OverlayPanel(
                         lives: player!.lives,
-                        time: DateTime.now().difference(_startOfPlay),
+                        time: _gameTime.elapsed,
                         onPause: (bool status) {
                           paused = status;
                           print(status);
@@ -300,7 +304,7 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   void initState() {
     super.initState();
 
-    _startOfPlay = DateTime.now();
+    _gameTime.start();
     _ticker = this.createTicker(changes);
     _ticker.start();
 
@@ -314,9 +318,9 @@ class _PlaySessionScreenState extends State<PlaySessionScreen>
   }
 
   _playerLost() {
-    // _log.info('Level ${widget.level.number} won');
+    _gameTime.stop();
     final score = Score(
-      DateTime.now().difference(_startOfPlay),
+      _gameTime.elapsed,
     );
     GoRouter.of(context).go('/play/lost', extra: {'score': score});
   }
